@@ -17,10 +17,12 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.TripVi
 
     class TripViewHolder extends RecyclerView.ViewHolder {
         private final TextView tripItemView;
+        private final TextView TV_StartLoc;
 
         private TripViewHolder(View itemView) {
             super(itemView);
             tripItemView = itemView.findViewById(R.id.TV_itemtest);
+            TV_StartLoc = itemView.findViewById(R.id.TV_itemstartloc);
         }
     }
 
@@ -40,6 +42,7 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.TripVi
         if (mTrips != null) {
             Trip trip = mTrips.get(position);
             holder.tripItemView.setText(trip.getStartLocation());
+            holder.TV_StartLoc.setText(trip.getStartLocation());
         } else {
             holder.tripItemView.setText("KEINE DATEN...");
         }
