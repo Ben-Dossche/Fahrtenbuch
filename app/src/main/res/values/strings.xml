@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">FBApp</string>
+    <string name="title_activity_main_fb">MainFBActivity</string>
+</resources>
