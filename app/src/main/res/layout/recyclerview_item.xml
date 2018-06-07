@@ -1,24 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:padding="8dp"
-    android:layout_height="wrap_content">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="3dp">
 
     <TextView
-        android:layout_width="match_parent"
         android:id="@+id/TV_itemtest"
-        android:textSize="24sp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@android:color/holo_orange_light" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        tools:text="Date" />
+
+    <TextView
+        android:id="@+id/TV_itemendloc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/TV_itemstartloc"
+        android:paddingLeft="8dp"
+        tools:text="endloc" />
 
     <TextView
         android:id="@+id/TV_itemstartloc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/TV_itemtest"
         android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:textSize="14sp"
-        android:background="@color/colorPrimary"
-        android:text="TextView" />
+        tools:text="startloc" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/TV_itemsummary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/TV_itemendloc"
+        android:paddingLeft="8dp"
+        tools:text="summary" />
+
+    <ImageButton
+        android:id="@+id/BT_itemsave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:background="@null"
+        app:srcCompat="@drawable/ic_save_black_24dp" />
+</RelativeLayout>

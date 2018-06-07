@@ -1,6 +1,7 @@
 package swdev.wifi.at.fbapp;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,11 +19,15 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.TripVi
     class TripViewHolder extends RecyclerView.ViewHolder {
         private final TextView tripItemView;
         private final TextView TV_StartLoc;
+        private final TextView TV_EndLoc;
+        private final TextView TV_Summary;
 
         private TripViewHolder(View itemView) {
             super(itemView);
             tripItemView = itemView.findViewById(R.id.TV_itemtest);
             TV_StartLoc = itemView.findViewById(R.id.TV_itemstartloc);
+            TV_EndLoc = itemView.findViewById(R.id.TV_itemendloc);
+            TV_Summary = itemView.findViewById(R.id.TV_itemsummary);
         }
     }
 
@@ -43,6 +48,13 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.TripVi
             Trip trip = mTrips.get(position);
             holder.tripItemView.setText(trip.getStartLocation());
             holder.TV_StartLoc.setText(trip.getStartLocation());
+            holder.TV_EndLoc.setText(trip.getStartLocation());
+            holder.TV_Summary.setText(trip.getStartLocation());
+            if (position%2 == 1) {
+                holder.itemView.setBackgroundColor(Color.parseColor("#EEEEEE"));
+            } else {
+                holder.itemView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            }
         } else {
             holder.tripItemView.setText("KEINE DATEN...");
         }
