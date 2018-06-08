@@ -30,10 +30,11 @@
 
             <Button
                 android:id="@+id/BT_StartTrip"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
+                android:layout_below="@id/SP_Category"
                 android:layout_marginBottom="50dp"
                 android:text="Farht starten" />
 
@@ -58,7 +59,7 @@
                 android:layout_below="@+id/ET_StartDate"
                 android:layout_centerHorizontal="true"
                 android:ems="10"
-                android:hint="Zeit*"
+                android:hint="Zeit (hh:mm)*"
                 android:inputType="time" />
 
             <Spinner
@@ -69,8 +70,6 @@
                 android:layout_alignStart="@+id/ET_StartLocation"
                 android:layout_below="@+id/ET_Note"
                 android:layout_centerHorizontal="true"
-                android:layout_marginEnd="54dp"
-                android:layout_marginStart="44dp"
                 android:entries="@array/categories_array" />
 
             <EditText
@@ -92,7 +91,7 @@
                 android:layout_alignStart="@+id/ET_StartLocation"
                 android:layout_below="@+id/ET_StartLocation"
                 android:ems="10"
-                android:hint="Datum*"
+                android:hint="Datum (tt/mm/yyyy)*"
                 android:inputType="date" />
         </RelativeLayout>
     </ScrollView>

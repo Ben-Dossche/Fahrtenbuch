@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import java.util.Date;
 import java.util.List;
+import java.util.function.ToDoubleBiFunction;
 
 import swdev.wifi.at.fbapp.db.Trip;
 import swdev.wifi.at.fbapp.db.TripViewModel;
@@ -94,8 +95,14 @@ public class MainFBActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == NEW_TRIP_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            Date d1 = new Date();
-            Trip trip = new Trip(d1,data.getStringExtra(NewTripActivity.EXTRA_REPLY_STARTLOCATION),4568);
+            //Date d1 = new Date();
+            Date d1 = new Date(data.getLongExtra(NewTripActivity.EXTRA_REPLY_STARTDATETIME,0));
+            Trip trip = new Trip(d1,
+                    data.getStringExtra(NewTripActivity.EXTRA_REPLY_STARTLOCATION),
+                    Integer.parseInt(data.getStringExtra(NewTripActivity.EXTRA_REPLY_STARTKM)),
+                    data.getStringExtra(NewTripActivity.EXTRA_REPLY_STARTCAT),
+                    data.getStringExtra(NewTripActivity.EXTRA_REPLY_STARTNOTE));
+            // TODO: 08.06.2018 add note and cat if needed
             mTripViewModel.addTrip(trip);
         } else {
             Toast.makeText(

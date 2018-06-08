@@ -128,6 +128,16 @@ public class Trip {
         this.startKm = startKm;
     }
 
+    public Trip(@NonNull Date start, @NonNull String startLocation, @NonNull int startKm, String startcat, String startnote) {
+        this.start = start;
+        this.startLocation = startLocation;
+        this.startKm = startKm;
+        if(note != null && !note.isEmpty()) {
+            this.note = startnote;
+        }
+        // TODO: 08.06.2018 category!!! attention: convert string to int as category.... 
+    }
+
     @Override
     public String toString() {
         return "Trip{" +

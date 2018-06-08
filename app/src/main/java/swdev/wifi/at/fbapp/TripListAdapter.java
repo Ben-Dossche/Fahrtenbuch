@@ -54,7 +54,14 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.TripVi
             holder.tripItemView.setText(df.format(trip.getStart()));
             holder.TV_StartLoc.setText(trip.getStartLocation());
             holder.TV_EndLoc.setText(trip.getStartLocation());
-            holder.TV_Summary.setText(trip.getStartLocation());
+            String snote = trip.getNote();
+            if(snote != null && !snote.isEmpty()) {
+                holder.TV_Summary.setText(" " + trip.getStartKm() + " km - " + snote.substring(0,15));
+            } else {
+                holder.TV_Summary.setText(" " + trip.getStartKm() + " km");
+            }
+
+            // TODO: 08.06.2018 calculate trip length!!!! 
             if (position%2 == 1) {
                 holder.itemView.setBackgroundColor(Color.parseColor("#EEEEEE"));
             } else {
