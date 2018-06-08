@@ -6,25 +6,94 @@
     android:layout_height="match_parent"
     tools:context=".NewTripActivity">
 
-    <EditText
-        android:id="@+id/ET_StartLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="70dp"
-        android:layout_marginTop="73dp"
-        android:ems="10"
-        android:hint="Ort Abfarht"
-        android:inputType="textPersonName" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true">
 
-    <Button
-        android:id="@+id/BT_StartTrip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="130dp"
-        android:layout_marginTop="169dp"
-        android:text="Farht starten" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/ET_Note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/ET_StartLocation"
+                android:layout_alignStart="@+id/ET_StartLocation"
+                android:layout_below="@+id/ET_StartKm"
+                android:ems="10"
+                android:hint="Zweck"
+                android:inputType="textPersonName" />
+
+            <Button
+                android:id="@+id/BT_StartTrip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="50dp"
+                android:text="Farht starten" />
+
+            <EditText
+                android:id="@+id/ET_StartKm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/ET_StartLocation"
+                android:layout_alignStart="@+id/ET_StartLocation"
+                android:layout_below="@+id/ET_StartTime"
+                android:layout_centerHorizontal="true"
+                android:ems="10"
+                android:hint="Kilometerstand*"
+                android:inputType="number" />
+
+            <EditText
+                android:id="@+id/ET_StartTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/ET_StartLocation"
+                android:layout_alignStart="@+id/ET_StartLocation"
+                android:layout_below="@+id/ET_StartDate"
+                android:layout_centerHorizontal="true"
+                android:ems="10"
+                android:hint="Zeit*"
+                android:inputType="time" />
+
+            <Spinner
+                android:id="@+id/SP_Category"
+                android:layout_width="286dp"
+                android:layout_height="43dp"
+                android:layout_alignEnd="@+id/ET_StartLocation"
+                android:layout_alignStart="@+id/ET_StartLocation"
+                android:layout_below="@+id/ET_Note"
+                android:layout_centerHorizontal="true"
+                android:layout_marginEnd="54dp"
+                android:layout_marginStart="44dp"
+                android:entries="@array/categories_array" />
+
+            <EditText
+                android:id="@+id/ET_StartLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="74dp"
+                android:ems="10"
+                android:hint="Ort Abfarht*"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/ET_StartDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/ET_StartLocation"
+                android:layout_alignStart="@+id/ET_StartLocation"
+                android:layout_below="@+id/ET_StartLocation"
+                android:ems="10"
+                android:hint="Datum*"
+                android:inputType="date" />
+        </RelativeLayout>
+    </ScrollView>
 </RelativeLayout>

@@ -10,7 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import swdev.wifi.at.fbapp.db.Trip;
 
@@ -33,6 +36,8 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.TripVi
 
     private final LayoutInflater mInflater;
     private List<Trip> mTrips; // Cached copy of words
+    private DateFormat df = new SimpleDateFormat("EEE dd MMM yyyy, HH:mm",
+            Locale.GERMAN);
 
     TripListAdapter(Context context) {mInflater = LayoutInflater.from(context);}
 
@@ -46,7 +51,7 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.TripVi
     public void onBindViewHolder(@NonNull TripViewHolder holder, int position) {
         if (mTrips != null) {
             Trip trip = mTrips.get(position);
-            holder.tripItemView.setText(trip.getStartLocation());
+            holder.tripItemView.setText(df.format(trip.getStart()));
             holder.TV_StartLoc.setText(trip.getStartLocation());
             holder.TV_EndLoc.setText(trip.getStartLocation());
             holder.TV_Summary.setText(trip.getStartLocation());

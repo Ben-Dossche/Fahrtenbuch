@@ -1,4 +1,8 @@
 <resources>
-    <string name="app_name">FBApp</string>
+    <string name="app_name">Fahrtenbuch</string>
     <string name="title_activity_main_fb">MainFBActivity</string>
+        <string-array name="categories_array">
+            <item>beruflich</item>
+            <item>privat</item>
+        </string-array>
 </resources>
