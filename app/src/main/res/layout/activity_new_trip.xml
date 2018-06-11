@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:layout_below="@id/SP_Category"
+                android:layout_below="@id/SW_Category"
                 android:layout_marginBottom="50dp"
                 android:text="Farht starten" />
 
@@ -62,15 +62,16 @@
                 android:hint="Zeit (hh:mm)*"
                 android:inputType="time" />
 
-            <Spinner
-                android:id="@+id/SP_Category"
-                android:layout_width="286dp"
-                android:layout_height="43dp"
-                android:layout_alignEnd="@+id/ET_StartLocation"
-                android:layout_alignStart="@+id/ET_StartLocation"
+            <Switch
+                android:id="@+id/SW_Category"
+                android:layout_width="229dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/ET_Note"
                 android:layout_centerHorizontal="true"
-                android:entries="@array/categories_array" />
+                android:checked="true"
+                android:ems="10"
+                android:textSize="18sp"
+                android:text="Beruflich" />
 
             <EditText
                 android:id="@+id/ET_StartLocation"

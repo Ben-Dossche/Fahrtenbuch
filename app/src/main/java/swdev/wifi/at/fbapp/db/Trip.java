@@ -132,10 +132,14 @@ public class Trip {
         this.start = start;
         this.startLocation = startLocation;
         this.startKm = startKm;
-        if(note != null && !note.isEmpty()) {
+        if(startnote != null && !startnote.isEmpty()) {
             this.note = startnote;
         }
-        // TODO: 08.06.2018 category!!! attention: convert string to int as category.... 
+        this.category = 0;
+        // cat = 1 for professional trips
+        if(startcat != null && !startcat.isEmpty() && (startcat.equals("beruflich"))) {
+            this.category = 1;
+        }
     }
 
     @Override

@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Switch;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -29,7 +30,7 @@ public class NewTripActivity extends AppCompatActivity {
     private EditText etStartTime;
     private EditText etStartKm;
     private EditText etNote;
-    private Spinner spCat;
+    private Switch swCat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +42,7 @@ public class NewTripActivity extends AppCompatActivity {
         etStartTime = findViewById(R.id.ET_StartTime);
         etStartKm = findViewById(R.id.ET_StartKm);
         etNote = findViewById(R.id.ET_Note);
-        spCat = findViewById(R.id.SP_Category);
+        swCat = findViewById(R.id.SW_Category);
 
         //FILL IN CURRENT DATE & TIME BY DEFAULT
         Date d1 = new Date();
@@ -71,7 +72,11 @@ public class NewTripActivity extends AppCompatActivity {
                     if (! TextUtils.isEmpty(etNote.getText())) {
                         replyintent.putExtra(EXTRA_REPLY_STARTNOTE,etNote.getText().toString());
                     }
-                    replyintent.putExtra(EXTRA_REPLY_STARTCAT, spCat.getSelectedItem().toString());
+                    if (swCat.isChecked()) {
+                        replyintent.putExtra(EXTRA_REPLY_STARTCAT, "beruflich");
+                    } else {
+                        replyintent.putExtra(EXTRA_REPLY_STARTCAT, "privat");
+                    }
                     //we store date and time as a long
                     try {
                         DateFormat dtf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.GERMAN);

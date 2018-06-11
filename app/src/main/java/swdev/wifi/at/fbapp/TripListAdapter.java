@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import java.text.DateFormat;
@@ -55,11 +56,28 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.TripVi
             holder.TV_StartLoc.setText(trip.getStartLocation());
             holder.TV_EndLoc.setText(trip.getStartLocation());
             String snote = trip.getNote();
-            if(snote != null && !snote.isEmpty()) {
-                holder.TV_Summary.setText(" " + trip.getStartKm() + " km - " + snote.substring(0,15));
+            String scat;
+            if (trip.getCategory() == 1) {
+                scat = "beruflich - ";
             } else {
-                holder.TV_Summary.setText(" " + trip.getStartKm() + " km");
+                scat = "";
             }
+
+            // TODO: 11.06.2018 calc trip length
+            if(snote != null && !snote.isEmpty()) {
+                if (snote.length() > 20) {
+                    holder.TV_Summary.setText(trip.getStartKm() + " km - " + scat + snote.substring(0,20) + "...");
+                } else {
+                    holder.TV_Summary.setText(trip.getStartKm() + " km - " + scat + snote);
+                }
+            } else {
+                if (scat.length() > 2) {
+                    holder.TV_Summary.setText(trip.getStartKm() + " km" + scat.substring(0,9));
+                } else {
+                    holder.TV_Summary.setText(trip.getStartKm() + " km");
+                }
+            }
+
 
             // TODO: 08.06.2018 calculate trip length!!!! 
             if (position%2 == 1) {
