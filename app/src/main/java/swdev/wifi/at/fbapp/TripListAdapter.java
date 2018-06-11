@@ -24,7 +24,9 @@ import java.util.Locale;
 
 import swdev.wifi.at.fbapp.db.Trip;
 
+
 public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.TripViewHolder> {
+    private View.OnClickListener viewClickListener;
 
     class TripViewHolder extends RecyclerView.ViewHolder {
         private final TextView tripItemView;
@@ -49,7 +51,10 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.TripVi
     private DateFormat df = new SimpleDateFormat("EEE dd MMM yyyy, HH:mm",
             Locale.GERMAN);
 
-    TripListAdapter(Context context) {mInflater = LayoutInflater.from(context);}
+    TripListAdapter(Context context, View.OnClickListener viewonClickListener) {
+        mInflater = LayoutInflater.from(context);
+        viewClickListener = viewonClickListener;
+    }
 
     @Override
     public TripViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -78,19 +83,9 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.TripVi
                 holder.BT_Save.setVisibility(View.GONE);
             } else {
                 holder.BT_Save.setVisibility(View.VISIBLE);
-                holder.BT_Save.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        //depending on tripdata we show activity for aktive or open trip
-                        Toast.makeText(
-                                holder.tripItemView.getContext(),
-                                "CLick: " + trip.getStartLocation(),
-                                Toast.LENGTH_LONG).show();
-
-                        //Intent intent = new Intent(MainFBActivity.this, NewTripActivity.class);
-                            //startActivityForResult(intent, NEW_TRIP_ACTIVITY_REQUEST_CODE);
-                        }
-                });
+                //bind edit button to onclicklistener
+                holder.BT_Save.setTag(trip);
+                holder.BT_Save.setOnClickListener(viewClickListener);
                 holder.TV_EndLoc.setText("not saved");
             }
 

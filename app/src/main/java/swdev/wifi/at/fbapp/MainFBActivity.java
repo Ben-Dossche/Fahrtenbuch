@@ -28,7 +28,25 @@ public class MainFBActivity extends AppCompatActivity {
 
     private TripViewModel mTripViewModel;
     public static final int NEW_TRIP_ACTIVITY_REQUEST_CODE = 123;
+    public static final int EDIT_ACTIVETRIP_ACTIVITY_REQUEST_CODE = 456;
+    public static final int EDIT_OPENTRIP_ACTIVITY_REQUEST_CODE = 789;
     private boolean activeTrips;
+
+    private View.OnClickListener itemClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Trip trip = (Trip) v.getTag();
+            //depending on tripdata we show activity for aktive or open trip
+            if (trip.getFinishKm() > 0) {
+                // TODO: 11.06.2018 open and process editopentripactivity
+                Toast.makeText(MainFBActivity.this.getApplicationContext(), "listener Clicked open trip:" + trip.getStartLocation(), Toast.LENGTH_LONG).show();
+            } else {
+                Intent intent = new Intent(MainFBActivity.this, EditActiveTripActivity.class);
+                intent.putExtra(EditActiveTripActivity.EXTRA__REPLY_TRIPID, trip._id);
+                startActivityForResult(intent, EDIT_ACTIVETRIP_ACTIVITY_REQUEST_CODE);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +61,7 @@ public class MainFBActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //we can not start new trip when active trip(s) present
                 // TODO: 11.06.2018 uncomment, is already working!!!
-                if (false) { //(mTripViewModel.activeTrips()) {
+                if (mTripViewModel.activeTrips()) { //(mTripViewModel.activeTrips()) {
                     Toast.makeText(
                             getApplicationContext(),
                             "Hinzufügen nicht möglich, es gibt ein aktive Fahrt...",
@@ -56,7 +74,7 @@ public class MainFBActivity extends AppCompatActivity {
         });
 
         RecyclerView recyclerView = findViewById(R.id.RV_alltrips);
-        final TripListAdapter adapter = new TripListAdapter(this);
+        final TripListAdapter adapter = new TripListAdapter(this, itemClickListener);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -88,6 +106,7 @@ public class MainFBActivity extends AppCompatActivity {
 
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -113,6 +132,7 @@ public class MainFBActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        // TODO: 11.06.2018 add request codes for editactive and editopentrip
         if (requestCode == NEW_TRIP_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
             //Date d1 = new Date();
             Date d1 = new Date(data.getLongExtra(NewTripActivity.EXTRA_REPLY_STARTDATETIME,0));
@@ -121,7 +141,6 @@ public class MainFBActivity extends AppCompatActivity {
                     Integer.parseInt(data.getStringExtra(NewTripActivity.EXTRA_REPLY_STARTKM)),
                     data.getStringExtra(NewTripActivity.EXTRA_REPLY_STARTCAT),
                     data.getStringExtra(NewTripActivity.EXTRA_REPLY_STARTNOTE));
-            // TODO: 08.06.2018 add note and cat if needed
             mTripViewModel.addTrip(trip);
         } else {
             Toast.makeText(
