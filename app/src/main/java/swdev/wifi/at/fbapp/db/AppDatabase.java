@@ -58,9 +58,14 @@ public abstract class AppDatabase extends RoomDatabase {
         protected Void doInBackground(final Void... params) {
             mDao.deleteAll();
             Date d1 = new Date();
-            Trip trip = new Trip(d1,"Stainz",104569);
+            Trip trip = new Trip(d1,"Stainz",104);
+            //trip.setSavedAt(d1);
+            trip.setFinishKm(200);
             mDao.addTrip(trip);
-            Trip trip2 = new Trip(d1,"Graz",105893);
+
+            Trip trip2 = new Trip(d1,"Graz",100);
+            trip2.setSavedAt(d1);
+            trip2.setFinishKm(153);
             mDao.addTrip(trip2);
             return null;
         }

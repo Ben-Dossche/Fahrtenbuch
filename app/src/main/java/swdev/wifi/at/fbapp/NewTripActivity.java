@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -59,11 +60,17 @@ public class NewTripActivity extends AppCompatActivity {
                 Intent replyintent = new Intent();
                 Date dstart;
                 //obligatory fields have data?
-  /*              if ((TextUtils.isEmpty(etStartLocation.getText())) ||
+                if ((TextUtils.isEmpty(etStartLocation.getText())) ||
                         (TextUtils.isEmpty(etStartDate.getText())) ||
                         (TextUtils.isEmpty(etStartTime.getText())) ||
                         (TextUtils.isEmpty(etStartKm.getText()))) {
-*/
+                    Toast.makeText(
+                            getApplicationContext(),
+                            "Bitte zuerst pflichtfelder eintragen...",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 if (TextUtils.isEmpty(etStartLocation.getText())) {
                     setResult(RESULT_CANCELED, replyintent);
                 } else {

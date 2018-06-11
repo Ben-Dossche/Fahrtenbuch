@@ -6,6 +6,7 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
+import android.database.Cursor;
 
 import java.util.List;
 
@@ -20,8 +21,17 @@ public interface TripDao {
     @Query("SELECT * from trips order by start DESC")
     LiveData<List<Trip>> getAllTrips();
 
-    @Query("SELECT * from trips where saved_at is null order by start DESC")
-    LiveData<List<Trip>> getAllOpenTrips();
+    @Query("SELECT COUNT(*) from trips where (saved_at is null) and (finish_km = 0)")
+    int getNrOfActiveTrips();
+
+    @Query("SELECT COUNT(*) from trips where (saved_at is null)")
+    int getNrOfOpenTrips();
+
+    @Query("SELECT * from trips where saved_at is null") //" and finish_km is null")
+    LiveData<List<Trip>> getActiveTrips();
+
+    @Query("SELECT * from trips where saved_at is null and not(finish_km is null) order by start DESC")
+    LiveData<List<Trip>> getOpenTrips();
 
     @Query("DELETE FROM trips")
     void deleteAll();

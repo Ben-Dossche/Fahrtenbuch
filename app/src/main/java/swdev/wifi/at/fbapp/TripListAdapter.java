@@ -1,5 +1,6 @@
 package swdev.wifi.at.fbapp;
 
+import android.arch.lifecycle.LiveData;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
@@ -36,7 +37,8 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.TripVi
     }
 
     private final LayoutInflater mInflater;
-    private List<Trip> mTrips; // Cached copy of words
+    private List<Trip> mTrips; // Cached copy of trips
+    private List<Trip> mActiveTrips;
     private DateFormat df = new SimpleDateFormat("EEE dd MMM yyyy, HH:mm",
             Locale.GERMAN);
 
@@ -72,7 +74,7 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.TripVi
                 }
             } else {
                 if (scat.length() > 2) {
-                    holder.TV_Summary.setText(trip.getStartKm() + " km" + scat.substring(0,9));
+                    holder.TV_Summary.setText(trip.getStartKm() + " km - " + scat.substring(0,9));
                 } else {
                     holder.TV_Summary.setText(trip.getStartKm() + " km");
                 }
@@ -96,7 +98,7 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.TripVi
     }
 
     // getItemCount() is called many times, and when it is first called,
-    // mWords has not been updated (means initially, it's null, and we can't return null).
+    // mTrips has not been updated (means initially, it's null, and we can't return null).
     @Override
     public int getItemCount() {
         if (mTrips != null)

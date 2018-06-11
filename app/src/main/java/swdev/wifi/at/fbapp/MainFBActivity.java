@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,7 @@ public class MainFBActivity extends AppCompatActivity {
 
     private TripViewModel mTripViewModel;
     public static final int NEW_TRIP_ACTIVITY_REQUEST_CODE = 123;
+    private boolean activeTrips;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +41,16 @@ public class MainFBActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainFBActivity.this, NewTripActivity.class);
-                startActivityForResult(intent, NEW_TRIP_ACTIVITY_REQUEST_CODE);
-
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
+                //we can not start new trip when active trip(s) present
+                if (mTripViewModel.activeTrips()) {
+                    Toast.makeText(
+                            getApplicationContext(),
+                            "Hinzufügen nicht möglich, es gibt ein aktive Fahrt...",
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    Intent intent = new Intent(MainFBActivity.this, NewTripActivity.class);
+                    startActivityForResult(intent, NEW_TRIP_ACTIVITY_REQUEST_CODE);
+                }
             }
         });
 
@@ -56,6 +63,7 @@ public class MainFBActivity extends AppCompatActivity {
         // Get a new or existing ViewModel from the ViewModelProvider.
         mTripViewModel = ViewModelProviders.of(this).get(TripViewModel.class);
 
+
         // Add an observer on the LiveData returned by getAlphabetizedWords.
         // The onChanged() method fires when the observed data changes and the activity is
         // in the foreground.
@@ -66,6 +74,16 @@ public class MainFBActivity extends AppCompatActivity {
                 adapter.setTrips(trips);
             }
         });
+
+//        mTripViewModel.getAllActiveTrips().observe(this, new Observer<List<Trip>>() {
+//            @Override
+//            public void onChanged(@Nullable final List<Trip> atrips) {
+//                //update activetrips boolean
+//                activeTrips = (atrips.size() > 0);
+//            }
+//        });
+
+
 
     }
 
