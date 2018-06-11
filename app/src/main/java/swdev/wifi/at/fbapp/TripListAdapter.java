@@ -2,18 +2,23 @@ package swdev.wifi.at.fbapp;
 
 import android.arch.lifecycle.LiveData;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -26,6 +31,7 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.TripVi
         private final TextView TV_StartLoc;
         private final TextView TV_EndLoc;
         private final TextView TV_Summary;
+        private final ImageButton BT_Save;
 
         private TripViewHolder(View itemView) {
             super(itemView);
@@ -33,12 +39,13 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.TripVi
             TV_StartLoc = itemView.findViewById(R.id.TV_itemstartloc);
             TV_EndLoc = itemView.findViewById(R.id.TV_itemendloc);
             TV_Summary = itemView.findViewById(R.id.TV_itemsummary);
+            BT_Save = itemView.findViewById(R.id.BT_itemsave);
         }
     }
 
     private final LayoutInflater mInflater;
     private List<Trip> mTrips; // Cached copy of trips
-    private List<Trip> mActiveTrips;
+    //private List<Trip> mActiveTrips;
     private DateFormat df = new SimpleDateFormat("EEE dd MMM yyyy, HH:mm",
             Locale.GERMAN);
 
@@ -51,12 +58,11 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.TripVi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TripViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final TripViewHolder holder, int position) {
         if (mTrips != null) {
-            Trip trip = mTrips.get(position);
+           final Trip trip = mTrips.get(position);
             holder.tripItemView.setText(df.format(trip.getStart()));
             holder.TV_StartLoc.setText(trip.getStartLocation());
-            holder.TV_EndLoc.setText(trip.getStartLocation());
             String snote = trip.getNote();
             String scat;
             if (trip.getCategory() == 1) {
@@ -65,6 +71,30 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.TripVi
                 scat = "";
             }
 
+            //depending on saved or not we show 'edit' button for this trip
+            Date dSaved = trip.getSavedAt();
+            if (dSaved != null) {
+                holder.TV_EndLoc.setText(df.format(dSaved)+trip.getStartLocation());   //trip.getStartLocation());
+                holder.BT_Save.setVisibility(View.GONE);
+            } else {
+                holder.BT_Save.setVisibility(View.VISIBLE);
+                holder.BT_Save.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //depending on tripdata we show activity for aktive or open trip
+                        Toast.makeText(
+                                holder.tripItemView.getContext(),
+                                "CLick: " + trip.getStartLocation(),
+                                Toast.LENGTH_LONG).show();
+
+                        //Intent intent = new Intent(MainFBActivity.this, NewTripActivity.class);
+                            //startActivityForResult(intent, NEW_TRIP_ACTIVITY_REQUEST_CODE);
+                        }
+                });
+                holder.TV_EndLoc.setText("not saved");
+            }
+
+            //define summary text using trip length, category and note
             // TODO: 11.06.2018 calc trip length
             if(snote != null && !snote.isEmpty()) {
                 if (snote.length() > 20) {
@@ -80,13 +110,20 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.TripVi
                 }
             }
 
-
-            // TODO: 08.06.2018 calculate trip length!!!! 
-            if (position%2 == 1) {
+            //alternating row background colors
+            if (position % 2 == 1) {
                 holder.itemView.setBackgroundColor(Color.parseColor("#EEEEEE"));
             } else {
                 holder.itemView.setBackgroundColor(Color.parseColor("#FFFFFF"));
             }
+
+            //overwrite default background for open trip (only 1 open trip possible)
+            int iFinishKm = trip.getFinishKm();
+            if (dSaved == null && trip.getFinishKm() == 0) {
+                int myColor = ContextCompat.getColor(holder.tripItemView.getContext(), R.color.colorAccentLight);
+                holder.itemView.setBackgroundColor(myColor);
+            }
+
         } else {
             holder.tripItemView.setText("KEINE DATEN...");
         }

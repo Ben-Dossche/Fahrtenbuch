@@ -42,7 +42,8 @@ public class MainFBActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //we can not start new trip when active trip(s) present
-                if (mTripViewModel.activeTrips()) {
+                // TODO: 11.06.2018 uncomment, is already working!!!
+                if (false) { //(mTripViewModel.activeTrips()) {
                     Toast.makeText(
                             getApplicationContext(),
                             "Hinzufügen nicht möglich, es gibt ein aktive Fahrt...",
