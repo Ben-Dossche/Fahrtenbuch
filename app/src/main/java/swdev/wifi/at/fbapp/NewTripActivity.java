@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ public class NewTripActivity extends AppCompatActivity {
     private EditText etStartTime;
     private EditText etStartKm;
     private EditText etNote;
+    private EditText etStartAddress;
     private Switch swCat;
 
     @Override
@@ -44,6 +46,7 @@ public class NewTripActivity extends AppCompatActivity {
         etStartKm = findViewById(R.id.ET_StartKm);
         etNote = findViewById(R.id.ET_Note);
         swCat = findViewById(R.id.SW_Category);
+        etStartAddress = findViewById(R.id.ET_StartAddress);
 
         //FILL IN CURRENT DATE & TIME BY DEFAULT
         Date d1 = new Date();
@@ -52,15 +55,17 @@ public class NewTripActivity extends AppCompatActivity {
         etStartDate.setText(df.format(d1));
         etStartTime.setText(tf.format(d1));
 
-        //BUTTON CLICK
+        //SAVE BUTTON CLICK
         final Button button = findViewById(R.id.BT_StartTrip);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent replyintent = new Intent();
                 Date dstart;
-                //obligatory fields have data?
+
+                //obligatory fields must have data
                 if ((TextUtils.isEmpty(etStartLocation.getText())) ||
+                        (TextUtils.isEmpty(etStartAddress.getText())) ||
                         (TextUtils.isEmpty(etStartDate.getText())) ||
                         (TextUtils.isEmpty(etStartTime.getText())) ||
                         (TextUtils.isEmpty(etStartKm.getText()))) {
@@ -71,32 +76,40 @@ public class NewTripActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (TextUtils.isEmpty(etStartLocation.getText())) {
-                    setResult(RESULT_CANCELED, replyintent);
-                } else {
-                    replyintent.putExtra(EXTRA_REPLY_STARTLOCATION,etStartLocation.getText().toString());
-                    replyintent.putExtra(EXTRA_REPLY_STARTKM,etStartKm.getText().toString());
-                    if (! TextUtils.isEmpty(etNote.getText())) {
-                        replyintent.putExtra(EXTRA_REPLY_STARTNOTE,etNote.getText().toString());
-                    }
-                    if (swCat.isChecked()) {
-                        replyintent.putExtra(EXTRA_REPLY_STARTCAT, "beruflich");
-                    } else {
-                        replyintent.putExtra(EXTRA_REPLY_STARTCAT, "privat");
-                    }
-                    //we store date and time as a long
-                    try {
-                        DateFormat dtf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.GERMAN);
-                        dstart = dtf.parse(etStartDate.getText().toString() + " "+ etStartTime.getText().toString());
-                        replyintent.putExtra(EXTRA_REPLY_STARTDATETIME, dstart.getTime());
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
 
-                    setResult(RESULT_OK, replyintent);
+                replyintent.putExtra(EXTRA_REPLY_STARTLOCATION, etStartAddress.getText().toString() + " - " + etStartLocation.getText().toString());
+                replyintent.putExtra(EXTRA_REPLY_STARTKM, etStartKm.getText().toString());
+                if (!TextUtils.isEmpty(etNote.getText())) {
+                    replyintent.putExtra(EXTRA_REPLY_STARTNOTE, etNote.getText().toString());
+                }
+                if (swCat.isChecked()) {
+                    replyintent.putExtra(EXTRA_REPLY_STARTCAT, "beruflich");
+                } else {
+                    replyintent.putExtra(EXTRA_REPLY_STARTCAT, "privat");
+                }
+                //we store date and time as a long
+                try {
+                    DateFormat dtf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.GERMAN);
+                    dstart = dtf.parse(etStartDate.getText().toString() + " " + etStartTime.getText().toString());
+                    replyintent.putExtra(EXTRA_REPLY_STARTDATETIME, dstart.getTime());
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
 
+                setResult(RESULT_OK, replyintent);
+
                 finish();
+            }
+        });
+
+        final ImageButton btDate = findViewById(R.id.BT_CalenderDlg);
+        btDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(
+                        getApplicationContext(),
+                        "datedialog...",
+                        Toast.LENGTH_SHORT).show();
             }
         });
 
