@@ -1,5 +1,6 @@
 package swdev.wifi.at.fbapp;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -16,10 +18,11 @@ import android.widget.Toast;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class NewTripActivity extends AppCompatActivity {
+public class NewTripActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     public static final String EXTRA_REPLY_STARTLOCATION = "startlocation";
     public static final String EXTRA_REPLY_STARTKM = "startkm";
@@ -106,12 +109,30 @@ public class NewTripActivity extends AppCompatActivity {
         btDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(
-                        getApplicationContext(),
-                        "datedialog...",
-                        Toast.LENGTH_SHORT).show();
+                Date date;
+                try {
+                    DateFormat dtf = new SimpleDateFormat("dd/MM/yyyy", Locale.GERMAN);
+                    date = dtf.parse(etStartDate.getText().toString());
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(date);
+                    int year = cal.get(Calendar.YEAR);
+                    int month = cal.get(Calendar.MONTH);
+                    int day = cal.get(Calendar.DAY_OF_MONTH);
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(NewTripActivity.this, NewTripActivity.this, year, month, day);
+                    datePickerDialog.show();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
 
+        findViewById(R.id.ET_StartAddress).requestFocus();
+
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        etStartDate.setText(dayOfMonth+"/"+(month+1)+"/"+year);
     }
 }

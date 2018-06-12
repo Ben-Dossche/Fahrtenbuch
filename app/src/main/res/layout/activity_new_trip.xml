@@ -126,17 +126,16 @@
             <Button
                 android:id="@+id/BT_StartTrip"
                 android:layout_width="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_below="@id/SW_Category"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="25dp"
+                android:background="@color/colorAccent"
+                android:textColor="#ffffff"
                 android:text="Farht starten" />
-
-
-
-
-
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>
