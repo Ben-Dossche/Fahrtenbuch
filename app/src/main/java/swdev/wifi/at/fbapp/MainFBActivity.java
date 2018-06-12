@@ -67,8 +67,7 @@ public class MainFBActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //we can not start new trip when active trip(s) present
-                // TODO: 11.06.2018 uncomment, is already working!!!
-                if (false) { //(mTripViewModel.activeTrips()) {
+                if (mTripViewModel.activeTrips()) { //(mTripViewModel.activeTrips()) {
                     Toast.makeText(
                             getApplicationContext(),
                             "Hinzufügen nicht möglich, es gibt ein aktive Fahrt...",
@@ -126,11 +125,16 @@ public class MainFBActivity extends AppCompatActivity {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Trip trip;
+        Date d1;
+        Date dnow;
+        int tripid;
+        String tripNote;
 
         // TODO: 11.06.2018 add request codes for editactive and editopentrip
         if (requestCode == NEW_TRIP_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            Date d1 = new Date(data.getLongExtra(NewTripActivity.EXTRA_REPLY_STARTDATETIME, 0));
-            Trip trip = new Trip(d1,
+            d1 = new Date(data.getLongExtra(NewTripActivity.EXTRA_REPLY_STARTDATETIME, 0));
+            trip = new Trip(d1,
                     data.getStringExtra(NewTripActivity.EXTRA_REPLY_STARTLOCATION),
                     Integer.parseInt(data.getStringExtra(NewTripActivity.EXTRA_REPLY_STARTKM)),
                     data.getStringExtra(NewTripActivity.EXTRA_REPLY_STARTCAT),
@@ -138,12 +142,49 @@ public class MainFBActivity extends AppCompatActivity {
             mTripViewModel.addTrip(trip);
         } else if (requestCode == EDIT_ACTIVETRIP_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                //Date d1 = new Date(data.getLongExtra(EditActiveTripActivity.EXTRA_REPLY_ENDDATETIME, 0));
+                d1 = new Date(data.getLongExtra(EditActiveTripActivity.EXTRA_REPLY_ENDDATETIME, 0));
                 // TODO: 12.06.2018 update trip in DB
-                Toast.makeText(
-                        getApplicationContext(),
-                        "Änderungen aktive Fahrt speichern",
-                        Toast.LENGTH_LONG).show();
+                tripid = data.getIntExtra(EditActiveTripActivity.EXTRA_REPLY_ENDTRIPID, 0);
+                //VALID TRIPID
+                if (tripid > 0) {
+                    //UPDATE TRIP
+                    if (EditActiveTripActivity.EXTRA_ACTION_UPDATE.equals(data.getStringExtra(EditActiveTripActivity.EXTRA_REPLY_ACTION))) {
+                        trip = mTripViewModel.getTripById(tripid);
+                        d1 = new Date(data.getLongExtra(EditActiveTripActivity.EXTRA_REPLY_ENDDATETIME, 0));
+                        trip.setFinish(d1);
+                        trip.setFinishKm(Integer.parseInt(data.getStringExtra(EditActiveTripActivity.EXTRA_REPLY_ENDKM)));
+                        trip.setFinishLocation(data.getStringExtra(EditActiveTripActivity.EXTRA_REPLY_ENDLOCATION));
+                        String sCat = data.getStringExtra(EditActiveTripActivity.EXTRA_REPLY_ENDCAT);
+                        if (sCat.equals("beruflich")) {
+                            trip.setCategory(1);
+                        } else {
+                            trip.setCategory(0);
+                        }
+                        tripNote = data.getStringExtra(EditActiveTripActivity.EXTRA_REPLY_ENDNOTE);
+                        if(tripNote != null && !tripNote.isEmpty()) {
+                            trip.setNote(tripNote);
+                            //if note also present then we can finish this trip (ie set saved_at date)
+                            dnow = new Date();
+                            trip.setSavedAt(dnow);
+                        }
+
+                        mTripViewModel.updateTrip(trip);
+                    //DELETE TRIP
+                    } else if (EditActiveTripActivity.EXTRA_ACTION_DELETE.equals(data.getStringExtra(EditActiveTripActivity.EXTRA_REPLY_ACTION))) {
+                        mTripViewModel.deleteTrip(tripid);
+                        Toast.makeText(
+                                getApplicationContext(),
+                                "Aktive Fahrt wurde gelöscht.",
+                                Toast.LENGTH_LONG).show();
+                    }
+
+
+                } else {
+                    Toast.makeText(
+                            getApplicationContext(),
+                            "Änderungen aktive Fahrt NICHT gespeichert, unbekannte ID.",
+                            Toast.LENGTH_LONG).show();
+                }
 
 
             } else {

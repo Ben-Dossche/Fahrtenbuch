@@ -65,6 +65,17 @@
                 android:textSize="12sp"
                 android:background="@color/colorLightGrey"
                 />
+            <ImageButton
+                android:id="@+id/BT_Delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/TV_ActiveInfo4"
+                android:layout_alignEnd="@id/TV_ActiveInfo4"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="-5dp"
+                android:background="@null"
+                app:srcCompat="@drawable/ic_delete_black_24dp" />
             <TextView
                 android:id="@+id/TV_End"
                 android:layout_width="match_parent"

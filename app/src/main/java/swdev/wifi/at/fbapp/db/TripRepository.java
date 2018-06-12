@@ -36,7 +36,11 @@ public class TripRepository {
         new insertAsyncTask(mTripDao).execute(trip);
     }
 
+    public void updateTrip (Trip trip) { new editAsyncTask(mTripDao).execute(trip); }
+
     public Trip getTripById(int id) { return mTripDao.getTripById(id);};
+
+    public void deleteTrip (int id) { new deleteAsyncTask(mTripDao).execute(getTripById(id));};
 
     private static class insertAsyncTask extends AsyncTask<Trip, Void, Void> {
 
@@ -52,5 +56,36 @@ public class TripRepository {
             return null;
         }
     }
+
+    private static class editAsyncTask extends AsyncTask<Trip, Void, Void> {
+
+        private TripDao mAsyncTaskDao;
+
+        editAsyncTask(TripDao dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final Trip... params) {
+            mAsyncTaskDao.updateTrip(params[0]);
+            return null;
+        }
+    }
+
+    private static class deleteAsyncTask extends AsyncTask<Trip, Void, Void> {
+
+        private TripDao mAsyncTaskDao;
+
+        deleteAsyncTask(TripDao dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final Trip... params) {
+            mAsyncTaskDao.deleteById(params[0]._id);
+            return null;
+        }
+    }
+
 
 }

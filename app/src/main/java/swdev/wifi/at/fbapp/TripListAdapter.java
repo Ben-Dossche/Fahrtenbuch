@@ -68,6 +68,7 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.TripVi
            final Trip trip = mTrips.get(position);
             holder.tripItemView.setText(df.format(trip.getStart()));
             holder.TV_StartLoc.setText(trip.getStartLocation());
+            holder.TV_EndLoc.setText(trip.getFinishLocation());
             String snote = trip.getNote();
             String scat;
             if (trip.getCategory() == 1) {
@@ -79,29 +80,35 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.TripVi
             //depending on saved or not we show 'edit' button for this trip
             Date dSaved = trip.getSavedAt();
             if (dSaved != null) {
-                holder.TV_EndLoc.setText(df.format(dSaved)+trip.getStartLocation());   //trip.getStartLocation());
+                //holder.TV_EndLoc.setText(df.format(dSaved)+trip.getStartLocation());   //trip.getStartLocation());
                 holder.BT_Save.setVisibility(View.GONE);
             } else {
                 holder.BT_Save.setVisibility(View.VISIBLE);
                 //bind edit button to onclicklistener
                 holder.BT_Save.setTag(trip);
                 holder.BT_Save.setOnClickListener(viewClickListener);
-                holder.TV_EndLoc.setText("not saved");
+            }
+
+            //define trip length
+            String tripLength;
+            if (trip.getFinishKm() > 0) {
+                tripLength = (trip.getFinishKm() - trip.getStartKm()) + " km";
+            } else {
+                tripLength = "??? km";
             }
 
             //define summary text using trip length, category and note
-            // TODO: 11.06.2018 calc trip length
             if(snote != null && !snote.isEmpty()) {
                 if (snote.length() > 20) {
-                    holder.TV_Summary.setText(trip.getStartKm() + " km - " + scat + snote.substring(0,20) + "...");
+                    holder.TV_Summary.setText(tripLength + " - " + scat + snote.substring(0,20) + "...");
                 } else {
-                    holder.TV_Summary.setText(trip.getStartKm() + " km - " + scat + snote);
+                    holder.TV_Summary.setText(tripLength + " - " + scat + snote);
                 }
             } else {
                 if (scat.length() > 2) {
-                    holder.TV_Summary.setText(trip.getStartKm() + " km - " + scat.substring(0,9));
+                    holder.TV_Summary.setText(tripLength + " - " + scat.substring(0,9));
                 } else {
-                    holder.TV_Summary.setText(trip.getStartKm() + " km");
+                    holder.TV_Summary.setText(tripLength);
                 }
             }
 

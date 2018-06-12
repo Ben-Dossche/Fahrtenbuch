@@ -1,6 +1,8 @@
 package swdev.wifi.at.fbapp;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -38,9 +40,16 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
     public static final String EXTRA_REPLY_ENDNOTE = "endnote";
     public static final String EXTRA_REPLY_ENDCAT = "endcat";
     public static final String EXTRA_REPLY_ENDTRIPID = "endtripid";
+    public static final String EXTRA_REPLY_ACTION = "tripaction";
+
+    public static final String EXTRA_ACTION_UPDATE = "update";
+    public static final String EXTRA_ACTION_DELETE = "delete";
+
+    AlertDialog.Builder builder;
 
 
     private int tripId;
+    private int tripStartKm;
     TextView TV_Info1;
     TextView TV_Info2;
     TextView TV_Info3;
@@ -69,11 +78,33 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
         swCat = findViewById(R.id.SW_EndCategory);
         etEndAddress = findViewById(R.id.ET_EndAddress);
 
+        builder = new AlertDialog.Builder(this);
+        builder.setTitle("Aktive Fahrt löschen");
+        builder.setMessage("Wollen Sie diesen aktiven Fahrt wirklich löschen?");
+        builder.setPositiveButton("JA", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent replyintent = new Intent();
+                replyintent.putExtra(EXTRA_REPLY_ACTION, EXTRA_ACTION_DELETE);
+                replyintent.putExtra(EXTRA_REPLY_ENDTRIPID, tripId);
+                setResult(RESULT_OK, replyintent);
+                finish();
+            }
+        });
+        builder.setNegativeButton("Nein", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+
         tripId = getIntent().getExtras().getInt(EXTRA_REPLY_TRIPID);
         TV_Info2.setText(getIntent().getExtras().getString(EXTRA_REPLY_TRIPSTARTLOC));
         TV_Info1.setText(getIntent().getExtras().getString(EXTRA_REPLY_TRIPSTARTDATETIME));
         TV_Info2.setText(getIntent().getExtras().getString(EXTRA_REPLY_TRIPSTARTLOC));
-        TV_Info3.setText(getIntent().getExtras().getInt(EXTRA_REPLY_TRIPSTARTKM) + " km");
+        TV_Info3.setText("Kilometerstand: " + getIntent().getExtras().getInt(EXTRA_REPLY_TRIPSTARTKM) + " km");
+        tripStartKm = getIntent().getExtras().getInt(EXTRA_REPLY_TRIPSTARTKM);
 
         //FILL IN CURRENT DATE & TIME BY DEFAULT
         Date d1 = new Date();
@@ -107,6 +138,16 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
                     return;
                 }
 
+                //finishkm must be > startkm
+                if (Integer.parseInt(etEndKm.getText().toString()) <= tripStartKm) {
+                    Toast.makeText(
+                            getApplicationContext(),
+                            "Kilometerstand ungültig (<= Km.Stand Abfahrt)...",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                replyintent.putExtra(EXTRA_REPLY_ACTION, EXTRA_ACTION_UPDATE);
                 replyintent.putExtra(EXTRA_REPLY_ENDTRIPID, tripId);
                 replyintent.putExtra(EXTRA_REPLY_ENDLOCATION, etEndAddress.getText().toString() + " - " + etEndLocation.getText().toString());
                 replyintent.putExtra(EXTRA_REPLY_ENDKM, etEndKm.getText().toString());
@@ -118,6 +159,7 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
                 } else {
                     replyintent.putExtra(EXTRA_REPLY_ENDCAT, "privat");
                 }
+
                 //we store date and time as a long
                 try {
                     DateFormat dtf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.GERMAN);
@@ -128,7 +170,6 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
                 }
 
                 setResult(RESULT_OK, replyintent);
-
                 finish();
             }
         });
@@ -156,6 +197,14 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
             }
         });
 
+        final ImageButton btDelete = findViewById(R.id.BT_Delete);
+        btDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
+        });
 
         findViewById(R.id.ET_EndAddress).requestFocus();
 

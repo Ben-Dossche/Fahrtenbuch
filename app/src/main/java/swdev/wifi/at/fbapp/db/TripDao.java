@@ -37,7 +37,7 @@ public interface TripDao {
     void deleteAll();
 
     @Query("DELETE FROM trips WHERE _id = :id")
-    void deleteById(long id);
+    void deleteById(int id);
 
     @Query("SELECT * FROM trips WHERE _id = :id")
     Trip getTripById(int id);
