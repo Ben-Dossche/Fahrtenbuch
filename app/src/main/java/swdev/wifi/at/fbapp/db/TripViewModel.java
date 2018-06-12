@@ -32,6 +32,8 @@ public class TripViewModel extends AndroidViewModel {
 
     public boolean openTrips() { return  (mRepository.NrOfOpenTrips() > 0 ? true : false);}
 
+    public Trip getTripById(int id) { return mRepository.getTripById(id);};
+
     public void addTrip(Trip trip) {
         mRepository.addTrip(trip);
     }

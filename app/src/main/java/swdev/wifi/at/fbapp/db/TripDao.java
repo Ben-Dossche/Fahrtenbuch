@@ -40,7 +40,7 @@ public interface TripDao {
     void deleteById(long id);
 
     @Query("SELECT * FROM trips WHERE _id = :id")
-    Trip getTripById(long id);
+    Trip getTripById(int id);
 
 
 }

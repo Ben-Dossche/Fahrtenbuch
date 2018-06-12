@@ -6,20 +6,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.function.ToDoubleBiFunction;
+import java.util.Locale;
 
 import swdev.wifi.at.fbapp.db.Trip;
 import swdev.wifi.at.fbapp.db.TripViewModel;
@@ -31,18 +31,25 @@ public class MainFBActivity extends AppCompatActivity {
     public static final int EDIT_ACTIVETRIP_ACTIVITY_REQUEST_CODE = 456;
     public static final int EDIT_OPENTRIP_ACTIVITY_REQUEST_CODE = 789;
     private boolean activeTrips;
+    private DateFormat df = new SimpleDateFormat("EEE dd MMM yyyy, HH:mm",
+            Locale.GERMAN);
 
     private View.OnClickListener itemClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             Trip trip = (Trip) v.getTag();
-            //depending on tripdata we show activity for aktive or open trip
+            //depending on tripdata we show activity for active or open trip
             if (trip.getFinishKm() > 0) {
                 // TODO: 11.06.2018 open and process editopentripactivity
                 Toast.makeText(MainFBActivity.this.getApplicationContext(), "listener Clicked open trip:" + trip.getStartLocation(), Toast.LENGTH_LONG).show();
             } else {
                 Intent intent = new Intent(MainFBActivity.this, EditActiveTripActivity.class);
-                intent.putExtra(EditActiveTripActivity.EXTRA__REPLY_TRIPID, trip._id);
+                intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPID, trip._id);
+                intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPSTARTLOC, trip.getStartLocation());
+                intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPSTARTDATETIME, df.format(trip.getStart()));
+                intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPSTARTKM, trip.getStartKm());
+                intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPSTARTNOTE, trip.getNote());
+                intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPSTARTCAT, trip.getCategory());
                 startActivityForResult(intent, EDIT_ACTIVETRIP_ACTIVITY_REQUEST_CODE);
             }
         }
@@ -78,10 +85,8 @@ public class MainFBActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-
         // Get a new or existing ViewModel from the ViewModelProvider.
         mTripViewModel = ViewModelProviders.of(this).get(TripViewModel.class);
-
 
         // Add an observer on the LiveData returned by getAlphabetizedWords.
         // The onChanged() method fires when the observed data changes and the activity is
@@ -93,16 +98,6 @@ public class MainFBActivity extends AppCompatActivity {
                 adapter.setTrips(trips);
             }
         });
-
-//        mTripViewModel.getAllActiveTrips().observe(this, new Observer<List<Trip>>() {
-//            @Override
-//            public void onChanged(@Nullable final List<Trip> atrips) {
-//                //update activetrips boolean
-//                activeTrips = (atrips.size() > 0);
-//            }
-//        });
-
-
 
     }
 
@@ -134,14 +129,29 @@ public class MainFBActivity extends AppCompatActivity {
 
         // TODO: 11.06.2018 add request codes for editactive and editopentrip
         if (requestCode == NEW_TRIP_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            //Date d1 = new Date();
-            Date d1 = new Date(data.getLongExtra(NewTripActivity.EXTRA_REPLY_STARTDATETIME,0));
+            Date d1 = new Date(data.getLongExtra(NewTripActivity.EXTRA_REPLY_STARTDATETIME, 0));
             Trip trip = new Trip(d1,
                     data.getStringExtra(NewTripActivity.EXTRA_REPLY_STARTLOCATION),
                     Integer.parseInt(data.getStringExtra(NewTripActivity.EXTRA_REPLY_STARTKM)),
                     data.getStringExtra(NewTripActivity.EXTRA_REPLY_STARTCAT),
                     data.getStringExtra(NewTripActivity.EXTRA_REPLY_STARTNOTE));
             mTripViewModel.addTrip(trip);
+        } else if (requestCode == EDIT_ACTIVETRIP_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                //Date d1 = new Date(data.getLongExtra(EditActiveTripActivity.EXTRA_REPLY_ENDDATETIME, 0));
+                // TODO: 12.06.2018 update trip in DB
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Änderungen aktive Fahrt speichern",
+                        Toast.LENGTH_LONG).show();
+
+
+            } else {
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Änderungen aktive Fahrt wurden nicht gespeichert...",
+                        Toast.LENGTH_LONG).show();
+            }
         } else {
             Toast.makeText(
                     getApplicationContext(),

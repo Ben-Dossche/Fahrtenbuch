@@ -15,10 +15,176 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <TextView
+                android:id="@+id/TV_ActiveInfo1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="edit active trip"/>
+                android:text="Abfahrt:"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="15dp"
+                android:textSize="14sp"
+                android:background="@color/colorLightGrey"
+                />
+            <TextView
+                android:id="@+id/TV_ActiveInfo2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:paddingLeft="5dp"
+                android:layout_alignEnd="@+id/TV_ActiveInfo1"
+                android:layout_alignStart="@+id/TV_ActiveInfo1"
+                android:layout_below="@+id/TV_ActiveInfo1"
+                android:textSize="12sp"
+                android:background="@color/colorLightGrey"
+                />
+            <TextView
+                android:id="@+id/TV_ActiveInfo3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:text=""
+                android:layout_alignEnd="@+id/TV_ActiveInfo1"
+                android:layout_alignStart="@+id/TV_ActiveInfo1"
+                android:layout_below="@+id/TV_ActiveInfo2"
+                android:textSize="12sp"
+                android:background="@color/colorLightGrey"
+                />
+            <TextView
+                android:id="@+id/TV_ActiveInfo4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:paddingBottom="5dp"
+                android:text=""
+                android:layout_alignEnd="@+id/TV_ActiveInfo1"
+                android:layout_alignStart="@+id/TV_ActiveInfo1"
+                android:layout_below="@+id/TV_ActiveInfo3"
+                android:textSize="12sp"
+                android:background="@color/colorLightGrey"
+                />
+            <TextView
+                android:id="@+id/TV_End"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:text="Ankunft"
+                android:layout_alignEnd="@+id/TV_ActiveInfo1"
+                android:layout_alignStart="@+id/TV_ActiveInfo1"
+                android:layout_below="@+id/TV_ActiveInfo4"
+                android:textSize="20sp"
+                android:paddingTop="5dp"
+                android:textAlignment="center"
+                />
+
+            <EditText
+                android:id="@+id/ET_EndDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/TV_End"
+                android:layout_alignStart="@+id/TV_End"
+                android:layout_marginRight="25dp"
+                android:layout_below="@+id/TV_End"
+                android:ems="10"
+                android:hint="Datum (tt/mm/yyyy)*"
+                android:inputType="date" />
+
+            <ImageButton
+                android:id="@+id/BT_EndCalenderDlg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/ET_EndDate"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="15dp"
+                android:layout_alignEnd="@id/TV_End"
+                android:layout_alignParentEnd="true"
+                android:background="@null"
+                app:srcCompat="@drawable/ic_next_week_black_24dp" />
+            <EditText
+                android:id="@+id/ET_EndTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/TV_End"
+                android:layout_alignStart="@+id/TV_End"
+                android:layout_below="@+id/ET_EndDate"
+                android:layout_centerHorizontal="true"
+                android:ems="10"
+                android:hint="Zeit (hh:mm)*"
+                android:inputType="time" />
+
+            <EditText
+                android:id="@+id/ET_EndAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/TV_End"
+                android:layout_alignStart="@+id/TV_End"
+                android:layout_below="@+id/ET_EndTime"
+                android:ems="10"
+                android:hint="Addresse Ankunft*"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/ET_EndLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/TV_End"
+                android:layout_alignStart="@+id/TV_End"
+                android:layout_below="@+id/ET_EndAddress"
+                android:ems="10"
+                android:hint="Ort Ankunft*"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/ET_EndKm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/TV_End"
+                android:layout_alignStart="@+id/TV_End"
+                android:layout_below="@+id/ET_EndLocation"
+                android:layout_centerHorizontal="true"
+                android:ems="10"
+                android:hint="Kilometerstand*"
+                android:inputType="number" />
+
+            <EditText
+                android:id="@+id/ET_EndNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/TV_End"
+                android:layout_alignStart="@+id/TV_End"
+                android:layout_below="@+id/ET_EndKm"
+                android:ems="10"
+                android:hint="Zweck"
+                android:inputType="textPersonName" />
+
+            <Switch
+                android:id="@+id/SW_EndCategory"
+                android:layout_width="229dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ET_EndNote"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:checked="true"
+                android:ems="10"
+                android:text="Beruflich"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/BT_EndTrip"
+                android:layout_width="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@id/SW_EndCategory"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="25dp"
+                android:background="@color/colorAccent"
+                android:textColor="#ffffff"
+                android:text="Fahrt beenden" />
+
+
         </RelativeLayout>
 
     </ScrollView>

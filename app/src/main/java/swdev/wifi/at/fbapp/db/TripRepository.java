@@ -36,7 +36,7 @@ public class TripRepository {
         new insertAsyncTask(mTripDao).execute(trip);
     }
 
-    public Trip getTripById(long id) { return mTripDao.getTripById(id);};
+    public Trip getTripById(int id) { return mTripDao.getTripById(id);};
 
     private static class insertAsyncTask extends AsyncTask<Trip, Void, Void> {
 
