@@ -19,10 +19,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NewTripActivity"
-            android:label="Neue Fahrt starten"/>
-        <activity android:name=".EditActiveTripActivity"
-            android:label="Aktive Fahrt"></activity>
+        <activity
+            android:name=".NewTripActivity"
+            android:label="Neue Fahrt starten" />
+        <activity
+            android:name=".EditActiveTripActivity"
+            android:label="Aktive Fahrt" />
+        <activity android:name=".EditOpenTripActivity"
+            android:label="Offene Fahrt"></activity>
     </application>
 
 </manifest>

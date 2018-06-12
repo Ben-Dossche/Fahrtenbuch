@@ -47,7 +47,6 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
 
     AlertDialog.Builder builder;
 
-
     private int tripId;
     private int tripStartKm;
     TextView TV_Info1;

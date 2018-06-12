@@ -38,10 +38,21 @@ public class MainFBActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             Trip trip = (Trip) v.getTag();
-            //depending on tripdata we show activity for active or open trip
+            //depending on tripdata we show activity for ACTIVE or OPEN trip
             if (trip.getFinishKm() > 0) {
-                // TODO: 11.06.2018 open and process editopentripactivity
-                Toast.makeText(MainFBActivity.this.getApplicationContext(), "listener Clicked open trip:" + trip.getStartLocation(), Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(MainFBActivity.this, EditOpenTripActivity.class);
+                intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPID, trip._id);
+                intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPSTARTLOC, trip.getStartLocation());
+                intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPSTARTDATETIME, df.format(trip.getStart()));
+                intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPSTARTKM, trip.getStartKm());
+                intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPSTARTNOTE, trip.getNote());
+                intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPSTARTCAT, trip.getCategory());
+
+                intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_ENDLOCATION, trip.getFinishLocation());
+                intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_ENDKM, trip.getFinishKm());
+                intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_ENDDATETIME, df.format(trip.getFinish()));
+
+                startActivityForResult(intent, EDIT_OPENTRIP_ACTIVITY_REQUEST_CODE);
             } else {
                 Intent intent = new Intent(MainFBActivity.this, EditActiveTripActivity.class);
                 intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPID, trip._id);
@@ -131,7 +142,6 @@ public class MainFBActivity extends AppCompatActivity {
         int tripid;
         String tripNote;
 
-        // TODO: 11.06.2018 add request codes for editactive and editopentrip
         if (requestCode == NEW_TRIP_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
             d1 = new Date(data.getLongExtra(NewTripActivity.EXTRA_REPLY_STARTDATETIME, 0));
             trip = new Trip(d1,
@@ -143,7 +153,6 @@ public class MainFBActivity extends AppCompatActivity {
         } else if (requestCode == EDIT_ACTIVETRIP_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 d1 = new Date(data.getLongExtra(EditActiveTripActivity.EXTRA_REPLY_ENDDATETIME, 0));
-                // TODO: 12.06.2018 update trip in DB
                 tripid = data.getIntExtra(EditActiveTripActivity.EXTRA_REPLY_ENDTRIPID, 0);
                 //VALID TRIPID
                 if (tripid > 0) {
@@ -161,7 +170,7 @@ public class MainFBActivity extends AppCompatActivity {
                             trip.setCategory(0);
                         }
                         tripNote = data.getStringExtra(EditActiveTripActivity.EXTRA_REPLY_ENDNOTE);
-                        if(tripNote != null && !tripNote.isEmpty()) {
+                        if (tripNote != null && !tripNote.isEmpty()) {
                             trip.setNote(tripNote);
                             //if note also present then we can finish this trip (ie set saved_at date)
                             dnow = new Date();
@@ -169,7 +178,7 @@ public class MainFBActivity extends AppCompatActivity {
                         }
 
                         mTripViewModel.updateTrip(trip);
-                    //DELETE TRIP
+                        //DELETE TRIP
                     } else if (EditActiveTripActivity.EXTRA_ACTION_DELETE.equals(data.getStringExtra(EditActiveTripActivity.EXTRA_REPLY_ACTION))) {
                         mTripViewModel.deleteTrip(tripid);
                         Toast.makeText(
@@ -186,20 +195,54 @@ public class MainFBActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG).show();
                 }
 
-
             } else {
                 Toast.makeText(
                         getApplicationContext(),
                         "Änderungen aktive Fahrt wurden nicht gespeichert...",
                         Toast.LENGTH_LONG).show();
             }
-        } else {
-            Toast.makeText(
-                    getApplicationContext(),
-                    "Leere Fahrt nicht gespeichert...",
-                    Toast.LENGTH_LONG).show();
+        } else if (requestCode == EDIT_OPENTRIP_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                tripid = data.getIntExtra(EditActiveTripActivity.EXTRA_REPLY_ENDTRIPID, 0);
+                //VALID TRIPID
+                if (tripid > 0) {
+                    //UPDATE TRIP
+                    trip = mTripViewModel.getTripById(tripid);
+                    String sCat = data.getStringExtra(EditActiveTripActivity.EXTRA_REPLY_ENDCAT);
+                    if (sCat.equals("beruflich")) {
+                        trip.setCategory(1);
+                    } else {
+                        trip.setCategory(0);
+                    }
+                    tripNote = data.getStringExtra(EditActiveTripActivity.EXTRA_REPLY_ENDNOTE);
+                    if (tripNote != null && !tripNote.isEmpty()) {
+                        trip.setNote(tripNote);
+                        //if note also present then we can finish this trip (ie set saved_at date)
+                        dnow = new Date();
+                        trip.setSavedAt(dnow);
+                    }
+                    mTripViewModel.updateTrip(trip);
+
+                } else {
+                    Toast.makeText(
+                            getApplicationContext(),
+                            "Änderungen offene Fahrt NICHT gespeichert, unbekannte ID.",
+                            Toast.LENGTH_LONG).show();
+                }
+
+            } else {
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Änderungen offene Fahrt NICHT gespeichert...",
+                        Toast.LENGTH_LONG).show();
+            }
+        } else{
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Leere Fahrt nicht gespeichert...",
+                        Toast.LENGTH_LONG).show();
+            }
         }
+
+
     }
-
-
-}
