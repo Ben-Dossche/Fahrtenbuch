@@ -97,13 +97,24 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
             }
         });
 
-
         tripId = getIntent().getExtras().getInt(EXTRA_REPLY_TRIPID);
         TV_Info2.setText(getIntent().getExtras().getString(EXTRA_REPLY_TRIPSTARTLOC));
         TV_Info1.setText(getIntent().getExtras().getString(EXTRA_REPLY_TRIPSTARTDATETIME));
         TV_Info2.setText(getIntent().getExtras().getString(EXTRA_REPLY_TRIPSTARTLOC));
         TV_Info3.setText("Kilometerstand: " + getIntent().getExtras().getInt(EXTRA_REPLY_TRIPSTARTKM) + " km");
         tripStartKm = getIntent().getExtras().getInt(EXTRA_REPLY_TRIPSTARTKM);
+
+        /* FEATURE DISABLED
+        //IF PRESENT FILL IN ENDLOCATION DATA (RETOUR TRIP)
+        String endLocation = getIntent().getExtras().getString(EXTRA_REPLY_ENDLOCATION);
+        if (!endLocation.equals("---")) {
+            String sData[] = endLocation.split(" - ");
+            if (sData.length == 2) {
+                etEndAddress.setText(sData[0]);
+                etEndLocation.setText(sData[1]);
+            }
+        }
+        */
 
         //FILL IN CURRENT DATE & TIME BY DEFAULT
         Date d1 = new Date();

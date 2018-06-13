@@ -39,6 +39,7 @@ public class MainFBActivity extends AppCompatActivity {
         public void onClick(View v) {
             Trip trip = (Trip) v.getTag();
             //depending on tripdata we show activity for ACTIVE or OPEN trip
+            //OPEN TRIP
             if (trip.getFinishKm() > 0) {
                 Intent intent = new Intent(MainFBActivity.this, EditOpenTripActivity.class);
                 intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPID, trip._id);
@@ -53,6 +54,7 @@ public class MainFBActivity extends AppCompatActivity {
                 intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_ENDDATETIME, df.format(trip.getFinish()));
 
                 startActivityForResult(intent, EDIT_OPENTRIP_ACTIVITY_REQUEST_CODE);
+            //ACTIVE TRIP
             } else {
                 Intent intent = new Intent(MainFBActivity.this, EditActiveTripActivity.class);
                 intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPID, trip._id);
@@ -61,6 +63,14 @@ public class MainFBActivity extends AppCompatActivity {
                 intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPSTARTKM, trip.getStartKm());
                 intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPSTARTNOTE, trip.getNote());
                 intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPSTARTCAT, trip.getCategory());
+                /*FEATURE DISABLED
+                //pass endlocation if present (retourtrip)
+                if (trip.getFinishLocation() != null && !trip.getFinishLocation().isEmpty()) {
+                    intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_ENDLOCATION, trip.getFinishLocation());
+                } else {
+                    intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_ENDLOCATION, "---");
+                }
+                */
                 startActivityForResult(intent, EDIT_ACTIVETRIP_ACTIVITY_REQUEST_CODE);
             }
         }
@@ -84,7 +94,17 @@ public class MainFBActivity extends AppCompatActivity {
                             "Hinzufügen nicht möglich, es gibt ein aktive Fahrt...",
                             Toast.LENGTH_LONG).show();
                 } else {
+                    //we retrieve data of last trip and past to newtripactivity
                     Intent intent = new Intent(MainFBActivity.this, NewTripActivity.class);
+                    Trip lastTrip = mTripViewModel.getLastTrip();
+                    if (lastTrip != null) {
+                        intent.putExtra(NewTripActivity.EXTRA_LASTSTARTLOCATION,lastTrip.getStartLocation());
+                        intent.putExtra(NewTripActivity.EXTRA_LASTENDKM, lastTrip.getFinishKm());
+                        intent.putExtra(NewTripActivity.EXTRA_LASTENDLOCATION,lastTrip.getFinishLocation());
+                    } else {
+                        intent.putExtra(NewTripActivity.EXTRA_LASTSTARTLOCATION,"---");
+                    }
+
                     startActivityForResult(intent, NEW_TRIP_ACTIVITY_REQUEST_CODE);
                 }
             }
@@ -149,6 +169,13 @@ public class MainFBActivity extends AppCompatActivity {
                     Integer.parseInt(data.getStringExtra(NewTripActivity.EXTRA_REPLY_STARTKM)),
                     data.getStringExtra(NewTripActivity.EXTRA_REPLY_STARTCAT),
                     data.getStringExtra(NewTripActivity.EXTRA_REPLY_STARTNOTE));
+            String endLoc = data.getStringExtra(NewTripActivity.EXTRA_REPLY_ENDLOCATION);
+            /*FEATURE DISABLED
+            //if we also received an endlocation (retourtrip) we store this in the new trip
+            if (!endLoc.equals("---")) {
+                trip.setFinishLocation(endLoc);
+            }
+            */
             mTripViewModel.addTrip(trip);
         } else if (requestCode == EDIT_ACTIVETRIP_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
@@ -175,6 +202,12 @@ public class MainFBActivity extends AppCompatActivity {
                             //if note also present then we can finish this trip (ie set saved_at date)
                             dnow = new Date();
                             trip.setSavedAt(dnow);
+                        } else {
+                            //if no note present and private trip (cat=0) then we can finish this trip (note is optional for private trips)
+                            if (trip.getCategory() == 0) {
+                                dnow = new Date();
+                                trip.setSavedAt(dnow);
+                            }
                         }
 
                         mTripViewModel.updateTrip(trip);
@@ -220,6 +253,12 @@ public class MainFBActivity extends AppCompatActivity {
                         //if note also present then we can finish this trip (ie set saved_at date)
                         dnow = new Date();
                         trip.setSavedAt(dnow);
+                    } else {
+                        //if no note present and private trip (cat=0) then we can finish this trip (note is optional for private trips)
+                        if (trip.getCategory() == 0) {
+                            dnow = new Date();
+                            trip.setSavedAt(dnow);
+                        }
                     }
                     mTripViewModel.updateTrip(trip);
 

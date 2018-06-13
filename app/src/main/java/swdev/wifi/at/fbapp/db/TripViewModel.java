@@ -34,6 +34,8 @@ public class TripViewModel extends AndroidViewModel {
 
     public Trip getTripById(int id) { return mRepository.getTripById(id);};
 
+    public Trip getLastTrip() { return  mRepository.getLastTrip();};
+
     public void addTrip(Trip trip) {
         mRepository.addTrip(trip);
     }

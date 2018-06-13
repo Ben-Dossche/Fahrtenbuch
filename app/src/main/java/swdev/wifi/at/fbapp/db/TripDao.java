@@ -42,6 +42,9 @@ public interface TripDao {
     @Query("SELECT * FROM trips WHERE _id = :id")
     Trip getTripById(int id);
 
+    @Query("SELECT * FROM trips ORDER BY _id DESC LIMIT 1")
+    Trip getLastTrip();
+
 
 }
 

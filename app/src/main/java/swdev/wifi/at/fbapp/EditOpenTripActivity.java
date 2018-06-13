@@ -73,14 +73,16 @@ public class EditOpenTripActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //obligatory fields must have data
-                if (TextUtils.isEmpty(etNote.getText())) {
-                    Toast.makeText(
-                            getApplicationContext(),
-                            "Bitte zuerst Zweck eintragen...",
-                            Toast.LENGTH_LONG).show();
-                    return;
+                //note is obligatory when professional trip
+                if (swCat.isChecked()) {
+                    if (TextUtils.isEmpty(etNote.getText())) {
+                        Toast.makeText(
+                                getApplicationContext(),
+                                "Bitte zuerst Zweck eintragen (Pflichtfeld für berufliche Fahrten)...",
+                                Toast.LENGTH_LONG).show();
+                        return;
+                    }
                 }
-
                 Intent replyintent = new Intent();
                 replyintent.putExtra(EXTRA_REPLY_ENDTRIPID, tripId);
                 if (!TextUtils.isEmpty(etNote.getText())) {

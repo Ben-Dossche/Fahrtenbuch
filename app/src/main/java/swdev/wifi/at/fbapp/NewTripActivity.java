@@ -29,6 +29,11 @@ public class NewTripActivity extends AppCompatActivity implements DatePickerDial
     public static final String EXTRA_REPLY_STARTDATETIME = "startdatetime";
     public static final String EXTRA_REPLY_STARTNOTE = "startnote";
     public static final String EXTRA_REPLY_STARTCAT = "startcat";
+    public static final String EXTRA_REPLY_ENDLOCATION = "endlocation";
+
+    public static final String EXTRA_LASTSTARTLOCATION = "laststartlocation";
+    public static final String EXTRA_LASTENDKM = "laststartkm";
+    public static final String EXTRA_LASTENDLOCATION = "lastendlocation";
 
     private EditText etStartLocation;
     private EditText etStartDate;
@@ -37,9 +42,16 @@ public class NewTripActivity extends AppCompatActivity implements DatePickerDial
     private EditText etNote;
     private EditText etStartAddress;
     private Switch swCat;
+    private ImageButton btRetourTrip;
+    private ImageButton btLastKm;
+    
+    private String lastStartLocation;
+    private String lastEndLocation;
+    private int lastEndKm;
+    private String replyEndLocation;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_trip);
 
@@ -50,6 +62,19 @@ public class NewTripActivity extends AppCompatActivity implements DatePickerDial
         etNote = findViewById(R.id.ET_Note);
         swCat = findViewById(R.id.SW_Category);
         etStartAddress = findViewById(R.id.ET_StartAddress);
+        btRetourTrip = findViewById(R.id.BT_RetourTrip);
+        btLastKm = findViewById(R.id.BT_LastKm);
+        replyEndLocation = "---";
+        
+        //RETRIEVE LAST TRIP INFO AND IF PRESENT THEN DISPLAY RETOURTRIP BUTTON
+        lastStartLocation = getIntent().getExtras().getString(EXTRA_LASTSTARTLOCATION);
+        if (!lastStartLocation.equals("---")) {
+            lastEndLocation = getIntent().getExtras().getString(EXTRA_LASTENDLOCATION);
+            lastEndKm =getIntent().getExtras().getInt(EXTRA_LASTENDKM);
+            btRetourTrip.setVisibility(View.VISIBLE);
+        } else {
+            btRetourTrip.setVisibility(View.GONE);
+        }
 
         //FILL IN CURRENT DATE & TIME BY DEFAULT
         Date d1 = new Date();
@@ -98,6 +123,7 @@ public class NewTripActivity extends AppCompatActivity implements DatePickerDial
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
+                replyintent.putExtra(EXTRA_REPLY_ENDLOCATION, replyEndLocation); //if no endlocation yet then it is defaultvalue "---"
 
                 setResult(RESULT_OK, replyintent);
 
@@ -105,6 +131,7 @@ public class NewTripActivity extends AppCompatActivity implements DatePickerDial
             }
         });
 
+        //CALENDARDIALOG BUTTON CLICK
         final ImageButton btDate = findViewById(R.id.BT_CalenderDlg);
         btDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,6 +151,40 @@ public class NewTripActivity extends AppCompatActivity implements DatePickerDial
                     e.printStackTrace();
                 }
 
+            }
+        });
+
+        //RETOURTRIP BUTTON CLICK
+        btRetourTrip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String[] sData;
+                sData = lastEndLocation.split(" - ");
+                if (sData.length != 2) {
+                    Toast.makeText(
+                            getApplicationContext(),
+                            "Fehler bei einlesen Daten Retourfahrt...",
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    etStartAddress.setText(sData[0]);
+                    etStartLocation.setText(sData[1]);
+                    etStartKm.setText("" + lastEndKm);
+                    replyEndLocation = lastStartLocation;
+                }
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Ankunftdaten letzte Fahrt übernommen...",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //LASTKM BUTTON CLICK
+        btLastKm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (lastEndKm > 0) {
+                    etStartKm.setText(""+lastEndKm);
+                }
             }
         });
 

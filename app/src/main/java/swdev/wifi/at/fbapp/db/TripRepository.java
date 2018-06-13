@@ -40,6 +40,8 @@ public class TripRepository {
 
     public Trip getTripById(int id) { return mTripDao.getTripById(id);};
 
+    public Trip getLastTrip() {return mTripDao.getLastTrip(); };
+
     public void deleteTrip (int id) { new deleteAsyncTask(mTripDao).execute(getTripById(id));};
 
     private static class insertAsyncTask extends AsyncTask<Trip, Void, Void> {
