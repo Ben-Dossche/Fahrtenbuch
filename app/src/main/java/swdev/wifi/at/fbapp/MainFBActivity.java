@@ -284,4 +284,14 @@ public class MainFBActivity extends AppCompatActivity {
         }
 
 
+    public void exportData(MenuItem item) {
+        if (mTripViewModel.openTrips()) { //(mTripViewModel.activeTrips()) {
+            Toast.makeText(
+                    getApplicationContext(),
+                    "Export nicht möglich, nicht alle Fahrten sind gespeichert...",
+                    Toast.LENGTH_LONG).show();
+        } else {
+            // TODO: 13.06.2018 export....
+        }
     }
+}

@@ -5,6 +5,7 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
+import java.util.Date;
 import java.util.List;
 
 public class TripViewModel extends AndroidViewModel {
@@ -23,6 +24,8 @@ public class TripViewModel extends AndroidViewModel {
     public LiveData<List<Trip>> getAllTrips() {
         return mAllTrips;
     }
+
+    public List<Trip> GetTripsForTimeFrame(Date dayStart, Date dayEnd) { return mRepository.GetTripsForTimeFrame(dayStart,dayEnd); }
 
 //    public LiveData<List<Trip>> getAllOpenTrips() { return mAllOpenTrips;}
 

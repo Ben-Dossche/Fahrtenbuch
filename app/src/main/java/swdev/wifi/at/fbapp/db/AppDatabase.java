@@ -60,10 +60,16 @@ public abstract class AppDatabase extends RoomDatabase {
             Date d1 = new Date();
             Trip trip = new Trip(d1,"Stainz",104);
             //trip.setSavedAt(d1);
+            trip.setFinishLocation("Graz");
+            trip.setFinish(d1);
             trip.setFinishKm(200);
+            trip.setCategory(0);
             mDao.addTrip(trip);
 
             Trip trip2 = new Trip(d1,"Graz",100);
+            trip2.setFinishLocation("Stainz");
+            trip2.setFinish(d1);
+            trip2.setCategory(0);
             trip2.setSavedAt(d1);
             trip2.setFinishKm(153);
             mDao.addTrip(trip2);
