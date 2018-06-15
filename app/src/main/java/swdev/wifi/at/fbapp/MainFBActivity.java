@@ -30,6 +30,7 @@ public class MainFBActivity extends AppCompatActivity {
     public static final int NEW_TRIP_ACTIVITY_REQUEST_CODE = 123;
     public static final int EDIT_ACTIVETRIP_ACTIVITY_REQUEST_CODE = 456;
     public static final int EDIT_OPENTRIP_ACTIVITY_REQUEST_CODE = 789;
+    public static final int EXPORT_ACTIVITY_REQUEST_CODE = 153;
     private boolean activeTrips;
     private DateFormat df = new SimpleDateFormat("EEE dd MMM yyyy, HH:mm",
             Locale.GERMAN);
@@ -162,21 +163,28 @@ public class MainFBActivity extends AppCompatActivity {
         int tripid;
         String tripNote;
 
-        if (requestCode == NEW_TRIP_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            d1 = new Date(data.getLongExtra(NewTripActivity.EXTRA_REPLY_STARTDATETIME, 0));
-            trip = new Trip(d1,
-                    data.getStringExtra(NewTripActivity.EXTRA_REPLY_STARTLOCATION),
-                    Integer.parseInt(data.getStringExtra(NewTripActivity.EXTRA_REPLY_STARTKM)),
-                    data.getStringExtra(NewTripActivity.EXTRA_REPLY_STARTCAT),
-                    data.getStringExtra(NewTripActivity.EXTRA_REPLY_STARTNOTE));
-            String endLoc = data.getStringExtra(NewTripActivity.EXTRA_REPLY_ENDLOCATION);
+        if (requestCode == NEW_TRIP_ACTIVITY_REQUEST_CODE ) {
+            if (resultCode == RESULT_OK) {
+                d1 = new Date(data.getLongExtra(NewTripActivity.EXTRA_REPLY_STARTDATETIME, 0));
+                trip = new Trip(d1,
+                        data.getStringExtra(NewTripActivity.EXTRA_REPLY_STARTLOCATION),
+                        Integer.parseInt(data.getStringExtra(NewTripActivity.EXTRA_REPLY_STARTKM)),
+                        data.getStringExtra(NewTripActivity.EXTRA_REPLY_STARTCAT),
+                        data.getStringExtra(NewTripActivity.EXTRA_REPLY_STARTNOTE));
+                String endLoc = data.getStringExtra(NewTripActivity.EXTRA_REPLY_ENDLOCATION);
             /*FEATURE DISABLED
             //if we also received an endlocation (retourtrip) we store this in the new trip
             if (!endLoc.equals("---")) {
                 trip.setFinishLocation(endLoc);
             }
             */
-            mTripViewModel.addTrip(trip);
+                mTripViewModel.addTrip(trip);
+            } else {
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Leere Fahrt nicht gespeichert...",
+                        Toast.LENGTH_LONG).show();
+            }
         } else if (requestCode == EDIT_ACTIVETRIP_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 d1 = new Date(data.getLongExtra(EditActiveTripActivity.EXTRA_REPLY_ENDDATETIME, 0));
@@ -275,12 +283,19 @@ public class MainFBActivity extends AppCompatActivity {
                         "Änderungen offene Fahrt NICHT gespeichert...",
                         Toast.LENGTH_LONG).show();
             }
-        } else{
+        } else if (requestCode == EXPORT_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+
+
+            } else {
                 Toast.makeText(
                         getApplicationContext(),
-                        "Leere Fahrt nicht gespeichert...",
+                        "Kein Export...",
                         Toast.LENGTH_LONG).show();
             }
+
+        }
+
         }
 
 
@@ -292,6 +307,13 @@ public class MainFBActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
         } else {
             // TODO: 13.06.2018 export....
+            //we retrieve data of last trip and past to newtripactivity
+            Intent intent = new Intent(MainFBActivity.this, ExportActivity.class);
+            Trip lastTrip = mTripViewModel.getLastTrip();
+            // TODO: 15.06.2018 pass default email
+               //   intent.putExtra(NewTripActivity.EXTRA_LASTSTARTLOCATION,lastTrip.getStartLocation());
+            startActivityForResult(intent, EXPORT_ACTIVITY_REQUEST_CODE);
+
         }
     }
 }

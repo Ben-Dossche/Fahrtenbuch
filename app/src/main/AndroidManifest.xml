@@ -25,8 +25,11 @@
         <activity
             android:name=".EditActiveTripActivity"
             android:label="Aktive Fahrt" />
-        <activity android:name=".EditOpenTripActivity"
-            android:label="Offene Fahrt"></activity>
+        <activity
+            android:name=".EditOpenTripActivity"
+            android:label="Offene Fahrt" />
+        <activity android:name=".ExportActivity"
+            android:label="Export"></activity>
     </application>
 
 </manifest>
