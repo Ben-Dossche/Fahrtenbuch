@@ -285,6 +285,16 @@ public class MainFBActivity extends AppCompatActivity {
             }
         } else if (requestCode == EXPORT_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
+                Long lFrom = data.getLongExtra(ExportActivity.EXTRA_REPLY_EXPORTFROM,0);
+                Long lTill = data.getLongExtra(ExportActivity.EXTRA_REPLY_EXPORTTILL,0);
+                String sEmail = data.getStringExtra(ExportActivity.EXTRA_REPLY_EMAIL);
+                String sCat = data.getStringExtra(ExportActivity.EXTRA_REPLY_EXPORTCATEGORY);
+
+                // TODO: 15.06.2018 EXPORT (get data, export to csv, send email)
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Export to " + sEmail,
+                        Toast.LENGTH_LONG).show();
 
 
             } else {
@@ -306,7 +316,6 @@ public class MainFBActivity extends AppCompatActivity {
                     "Export nicht möglich, nicht alle Fahrten sind gespeichert...",
                     Toast.LENGTH_LONG).show();
         } else {
-            // TODO: 13.06.2018 export....
             //we retrieve data of last trip and past to newtripactivity
             Intent intent = new Intent(MainFBActivity.this, ExportActivity.class);
             Trip lastTrip = mTripViewModel.getLastTrip();

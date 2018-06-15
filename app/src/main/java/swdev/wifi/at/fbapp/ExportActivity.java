@@ -58,7 +58,7 @@ public class ExportActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent replyintent = new Intent();
-                Date dstart;
+                Date d;
 
                 //obligatory fields must have data
                 if ((TextUtils.isEmpty(etFrom.getText())) ||
@@ -72,10 +72,25 @@ public class ExportActivity extends AppCompatActivity {
                     return;
                 }
 
-                // TODO: 15.06.2018 check till date is after from date
-
-
-
+                //we pass dates as long
+                try {
+                    DateFormat dtf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.GERMAN);
+                    d = dtf.parse(etFrom.getText().toString() + " 00:00");
+                    replyintent.putExtra(EXTRA_REPLY_EXPORTFROM, d.getTime());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    DateFormat dtf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.GERMAN);
+                    d = dtf.parse(etTill.getText().toString() + " 23:59");
+                    replyintent.putExtra(EXTRA_REPLY_EXPORTTILL, d.getTime());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                replyintent.putExtra(EXTRA_REPLY_EMAIL, etEmail.getText().toString());
+                replyintent.putExtra(EXTRA_REPLY_EXPORTCATEGORY, spCat.getSelectedItem().toString());
+                setResult(RESULT_OK, replyintent);
+                finish();
             }
         });
 
