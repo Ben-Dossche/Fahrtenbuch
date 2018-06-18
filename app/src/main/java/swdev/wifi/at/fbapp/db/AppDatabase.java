@@ -88,7 +88,7 @@ public abstract class AppDatabase extends RoomDatabase {
                 try {
                     d1 = dtf.parse("05/06/2018 14:53");
                     trip2.setFinish(d1);
-                    trip2.setCategory(0);
+                    trip2.setCategory(1);
                     trip2.setSavedAt(d1);
                     trip2.setFinishKm(153);
                     mDao.addTrip(trip2);

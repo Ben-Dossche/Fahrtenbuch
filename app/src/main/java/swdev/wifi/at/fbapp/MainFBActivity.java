@@ -1,7 +1,6 @@
 package swdev.wifi.at.fbapp;
 
 import android.Manifest;
-import android.app.DownloadManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
@@ -25,8 +24,6 @@ import android.widget.Toast;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -387,75 +384,97 @@ public class MainFBActivity extends AppCompatActivity {
     private void proceedExport() {
         //we have permission to proceed export
         String dataString;
+        String catString;
 
         File file = null;
         File root = Environment.getExternalStorageDirectory();
         if (root.canWrite()){
-            //CREATE CSV FILE AND EXPORT DATA
-            File directoryDownload = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-            file = new File(directoryDownload, "fahrtenbuchdata.csv");
-            file.delete();
-            file = new File(directoryDownload, "fahrtenbuchdata.csv");
+            //RETRIEVE TRIPDATA
+            List<Trip> trips;
+            if (exportCat.equals("nur berufliche Fahrten")) {
+                trips = mTripViewModel.GetBusinessTripsForTimeFrame(exportFrom, exportTill);
+            } else {
+                trips = mTripViewModel.GetTripsForTimeFrame(exportFrom, exportTill);
+            }
 
-            BufferedWriter bw = null;
-            try {
-                bw = new BufferedWriter(new FileWriter(file, true));
-                bw.write("Abfahrt,Ort Abfahrt,Km Abfahrt,Ankunf,Ort Ankunft,Km Ankunft, Gefahrene Km");
-                bw.newLine();
-                final DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.GERMAN);
-                List<Trip> trips = mTripViewModel.GetTripsForTimeFrame(exportFrom,exportTill);
-                for (Trip trip : trips) {
-                    dataString = df.format(trip.getStart())  +"," +
-                            trip.getStartLocation() + "," +
-                            trip.getStartKm() + "," +
-                            df.format(trip.getFinish()) + "," +
-                            trip.getFinishLocation() + "," +
-                            trip.getFinishKm() + "," +
-                            (trip.getFinishKm() - trip.getStartKm());
-                    bw.write(dataString);
+            if (trips.size() == 0) {
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Keine Fahrten zu exportieren...",
+                        Toast.LENGTH_LONG).show();
+            } else {
+                //CREATE CSV FILE AND EXPORT DATA
+                File directoryDownload = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                file = new File(directoryDownload, "fahrtenbuchdata.csv");
+                file.delete();
+                file = new File(directoryDownload, "fahrtenbuchdata.csv");
+
+                BufferedWriter bw = null;
+                try {
+                    bw = new BufferedWriter(new FileWriter(file, true));
+                    bw.write("Abfahrt,Ort Abfahrt,Km Abfahrt,Ankunf,Ort Ankunft,Km Ankunft, Gefahrene Km, Beruflich");
                     bw.newLine();
-                }
+                    final DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.GERMAN);
+                    for (Trip trip : trips) {
+                        if (trip.getCategory() == 1) {
+                            catString = "X";
+                        } else {
+                            catString = "";
+                        }
+                        dataString = df.format(trip.getStart()) + "," +
+                                trip.getStartLocation() + "," +
+                                trip.getStartKm() + "," +
+                                df.format(trip.getFinish()) + "," +
+                                trip.getFinishLocation() + "," +
+                                trip.getFinishKm() + "," +
+                                (trip.getFinishKm() - trip.getStartKm()) + "," +
+                                catString;
+                        bw.write(dataString);
+                        bw.newLine();
+                    }
 
-                //bw.write("sadföslkj ewrwr,kölfjsf ösfkj,12/03/2018 12:45,45353,243" + "\n");
-                bw.flush();
-                bw.close();
-            } catch (IOException e) {
+                    //bw.write("sadföslkj ewrwr,kölfjsf ösfkj,12/03/2018 12:45,45353,243" + "\n");
+                    bw.flush();
+                    bw.close();
+                } catch (IOException e) {
+                    Toast.makeText(
+                            getApplicationContext(),
+                            "Export exception",
+                            Toast.LENGTH_LONG).show();
+
+                }
+                /*WORKING !!!*/
+                //SEND EMAIL WITH ATTACHMENT
+                try {
+                    Uri u1 = null;
+                    u1 = Uri.fromFile(file);
+                    if (u1 != null) {
+                        //ATTENTION
+                        //as of android 6 in gmail app
+                        //Settings->Apps->Gmail->Permissions and enable the "Storage" permission manually,
+                        //otherwise attachment does not work!!!
+                        Intent sendIntent = new Intent(Intent.ACTION_SEND);
+                        sendIntent.setType("plain/text");
+                        String to[] = {exportEmail};
+                        sendIntent.putExtra(Intent.EXTRA_EMAIL, to);
+                        sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Fahrtenbuch Export");
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, "Fahrtenbuch daten...");
+                        sendIntent.putExtra(Intent.EXTRA_STREAM, u1);
+                        startActivity(sendIntent);
+                    }
+                } catch (Throwable t) {
+                    Toast.makeText(
+                            getApplicationContext(),
+                            "mail failed",
+                            Toast.LENGTH_LONG).show();
+                }
+//*/
                 Toast.makeText(
                         getApplicationContext(),
-                        "Export exception",
+                        "Export fertig",
                         Toast.LENGTH_LONG).show();
 
             }
-/*WORKING !!!
-            //SEND EMAIL WITH ATTACHMENT
-            try {
-                Uri u1 = null;
-                u1 = Uri.fromFile(file);
-                if (u1 != null) {
-                    //ATTENTION
-                    //as of android 6 in gmail app
-                    //Settings->Apps->Gmail->Permissions and enable the "Storage" permission manually,
-                    //otherwise attachment does not work!!!
-                    Intent sendIntent = new Intent(Intent.ACTION_SEND);
-                    sendIntent.setType("plain/text");
-                    String to[] = {exportEmail};
-                    sendIntent.putExtra(Intent.EXTRA_EMAIL, to);
-                    sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Fahrtenbuch Export");
-                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Fahrtenbuch daten...");
-                    sendIntent.putExtra(Intent.EXTRA_STREAM, u1);
-                    startActivity(sendIntent);
-                }
-            } catch (Throwable t) {
-                Toast.makeText(
-                        getApplicationContext(),
-                        "mail failed",
-                        Toast.LENGTH_LONG).show();
-            }
-*/
-            Toast.makeText(
-                    getApplicationContext(),
-                    "Export fertig",
-                    Toast.LENGTH_LONG).show();
 
         } else {
             Toast.makeText(

@@ -4,7 +4,6 @@ import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 
-import java.util.Date;
 import java.util.List;
 
 public class TripRepository {
@@ -28,6 +27,10 @@ public class TripRepository {
     //LiveData<List<Trip>> getAllOpenTrips() {    return mAllOpenTrips;   };
 
     //LiveData<List<Trip>> getAllActiveTrips() {return mAllActiveTrips;};
+
+    public List<Trip> GetBusinessTripsForTimeFrame(Long dateStart, Long dateEnd) {
+        return mTripDao.getBusinessTripsForTimeFrame(dateStart,dateEnd);
+    }
 
     public List<Trip> GetTripsForTimeFrame(Long dateStart, Long dateEnd) {
         return mTripDao.getTripsForTimeFrame(dateStart,dateEnd);
