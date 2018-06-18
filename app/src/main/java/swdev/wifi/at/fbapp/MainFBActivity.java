@@ -1,20 +1,34 @@
 package swdev.wifi.at.fbapp;
 
+import android.Manifest;
+import android.app.DownloadManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,6 +48,11 @@ public class MainFBActivity extends AppCompatActivity {
     private boolean activeTrips;
     private DateFormat df = new SimpleDateFormat("EEE dd MMM yyyy, HH:mm",
             Locale.GERMAN);
+
+    private String exportEmail;
+    private Long exportFrom;
+    private Long exportTill;
+    private String  exportCat;
 
     private View.OnClickListener itemClickListener = new View.OnClickListener() {
         @Override
@@ -285,18 +304,11 @@ public class MainFBActivity extends AppCompatActivity {
             }
         } else if (requestCode == EXPORT_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                Long lFrom = data.getLongExtra(ExportActivity.EXTRA_REPLY_EXPORTFROM,0);
-                Long lTill = data.getLongExtra(ExportActivity.EXTRA_REPLY_EXPORTTILL,0);
-                String sEmail = data.getStringExtra(ExportActivity.EXTRA_REPLY_EMAIL);
-                String sCat = data.getStringExtra(ExportActivity.EXTRA_REPLY_EXPORTCATEGORY);
-
-                // TODO: 15.06.2018 EXPORT (get data, export to csv, send email)
-                Toast.makeText(
-                        getApplicationContext(),
-                        "Export to " + sEmail,
-                        Toast.LENGTH_LONG).show();
-
-
+                exportEmail = data.getStringExtra(ExportActivity.EXTRA_REPLY_EMAIL);
+                exportFrom = data.getLongExtra(ExportActivity.EXTRA_REPLY_EXPORTFROM,0);
+                exportTill = data.getLongExtra(ExportActivity.EXTRA_REPLY_EXPORTTILL,0);
+                exportCat = data.getStringExtra(ExportActivity.EXTRA_REPLY_EXPORTCATEGORY);
+                startExport();
             } else {
                 Toast.makeText(
                         getApplicationContext(),
@@ -322,7 +334,128 @@ public class MainFBActivity extends AppCompatActivity {
             // TODO: 15.06.2018 pass default email
                //   intent.putExtra(NewTripActivity.EXTRA_LASTSTARTLOCATION,lastTrip.getStartLocation());
             startActivityForResult(intent, EXPORT_ACTIVITY_REQUEST_CODE);
-
         }
     }
+
+    /* Checks if external storage is available for read and write */
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+
+    /* Checks permission */
+    public  boolean isStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.v("TAG","Permission is granted");
+                return true;
+            } else {
+                Log.v("TAG","Permission is revoked");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                return false;
+            }
+        }
+        else { //permission is automatically granted on sdk<23 upon installation
+            Log.v("TAG","Permission is granted");
+            return true;
+        }
+    }
+
+    private void startExport() {
+        if (isExternalStorageWritable() && (isStoragePermissionGranted())) {
+                proceedExport();
+        } else {
+            Toast.makeText(
+                    getApplicationContext(),
+                    "Export nicht möglich: externe Speicher nicht verfügbar / keine Berechtingung",
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
+            proceedExport();
+        }
+    }
+
+    private void proceedExport() {
+        //we have permission to proceed export
+        String columnString =   "\"abfahrt\",\"ankunft\",\"km1\",\"km2\"";
+        String dataString   =   "\"graz\",\"stainz bei straden\",123,345";
+        String combinedString = columnString + "\n" + dataString;
+
+        File file = null;
+        File root = Environment.getExternalStorageDirectory();
+        if (root.canWrite()){
+            //CREATE CSV FILE
+            File directoryDownload = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            file = new File(directoryDownload, "fahrtenbuchdata.csv");
+            file.delete();
+            file = new File(directoryDownload, "fahrtenbuchdata.csv");
+
+            BufferedWriter bw = null;
+            try {
+                bw = new BufferedWriter(new FileWriter(file, true));
+                // TODO: 18.06.2018 write trip data....
+                bw.write("f1,f2,f3,f4,f5");
+                bw.newLine();
+                bw.write("sadföslkj ewrwr,kölfjsf ösfkj,12/03/2018 12:45,45353,243" + "\n");
+                bw.flush();
+                bw.close();
+            } catch (IOException e) {
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Export exception",
+                        Toast.LENGTH_LONG).show();
+
+            }
+/*WORKING !!!
+            //SEND EMAIL WITH ATTACHMENT
+            try {
+                Uri u1 = null;
+                u1 = Uri.fromFile(file);
+                if (u1 != null) {
+                    //ATTENTION
+                    //as of android 6 in gmail app
+                    //Settings->Apps->Gmail->Permissions and enable the "Storage" permission manually,
+                    //otherwise attachment does not work!!!
+                    Intent sendIntent = new Intent(Intent.ACTION_SEND);
+                    sendIntent.setType("plain/text");
+                    String to[] = {exportEmail};
+                    sendIntent.putExtra(Intent.EXTRA_EMAIL, to);
+                    sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Fahrtenbuch Export");
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Fahrtenbuch daten...");
+                    sendIntent.putExtra(Intent.EXTRA_STREAM, u1);
+                    startActivity(sendIntent);
+                }
+            } catch (Throwable t) {
+                Toast.makeText(
+                        getApplicationContext(),
+                        "mail failed",
+                        Toast.LENGTH_LONG).show();
+            }
+*/
+            Toast.makeText(
+                    getApplicationContext(),
+                    "Export fertig",
+                    Toast.LENGTH_LONG).show();
+
+        } else {
+            Toast.makeText(
+                    getApplicationContext(),
+                    "Export fehlgeschlagen",
+                    Toast.LENGTH_LONG).show();
+        }
+
+
+    }
+
+
+
 }

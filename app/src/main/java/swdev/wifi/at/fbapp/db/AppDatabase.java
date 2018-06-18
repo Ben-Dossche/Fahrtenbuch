@@ -63,6 +63,7 @@ public abstract class AppDatabase extends RoomDatabase {
             trip.setFinishLocation("Graz");
             trip.setFinish(d1);
             trip.setFinishKm(200);
+            trip.setSavedAt(d1);
             trip.setCategory(0);
             mDao.addTrip(trip);
 
