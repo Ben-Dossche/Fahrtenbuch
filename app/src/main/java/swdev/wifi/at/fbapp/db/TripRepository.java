@@ -29,12 +29,8 @@ public class TripRepository {
 
     //LiveData<List<Trip>> getAllActiveTrips() {return mAllActiveTrips;};
 
-    public List<Trip> GetTripsForTimeFrame(Date dayStart, Date dayEnd) {
-        Long days;
-        Long daye;
-        days = DateConverters.dateToTimestamp(dayStart);
-        daye = DateConverters.dateToTimestamp(dayEnd);
-        return mTripDao.getTripsForTimeFrame(days,daye);
+    public List<Trip> GetTripsForTimeFrame(Long dateStart, Long dateEnd) {
+        return mTripDao.getTripsForTimeFrame(dateStart,dateEnd);
     }
 
     public int NrOfActiveTrips() {return mTripDao.getNrOfActiveTrips();};

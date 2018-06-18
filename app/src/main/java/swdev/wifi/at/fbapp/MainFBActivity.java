@@ -386,14 +386,12 @@ public class MainFBActivity extends AppCompatActivity {
 
     private void proceedExport() {
         //we have permission to proceed export
-        String columnString =   "\"abfahrt\",\"ankunft\",\"km1\",\"km2\"";
-        String dataString   =   "\"graz\",\"stainz bei straden\",123,345";
-        String combinedString = columnString + "\n" + dataString;
+        String dataString;
 
         File file = null;
         File root = Environment.getExternalStorageDirectory();
         if (root.canWrite()){
-            //CREATE CSV FILE
+            //CREATE CSV FILE AND EXPORT DATA
             File directoryDownload = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
             file = new File(directoryDownload, "fahrtenbuchdata.csv");
             file.delete();
@@ -402,10 +400,23 @@ public class MainFBActivity extends AppCompatActivity {
             BufferedWriter bw = null;
             try {
                 bw = new BufferedWriter(new FileWriter(file, true));
-                // TODO: 18.06.2018 write trip data....
-                bw.write("f1,f2,f3,f4,f5");
+                bw.write("Abfahrt,Ort Abfahrt,Km Abfahrt,Ankunf,Ort Ankunft,Km Ankunft, Gefahrene Km");
                 bw.newLine();
-                bw.write("sadföslkj ewrwr,kölfjsf ösfkj,12/03/2018 12:45,45353,243" + "\n");
+                final DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.GERMAN);
+                List<Trip> trips = mTripViewModel.GetTripsForTimeFrame(exportFrom,exportTill);
+                for (Trip trip : trips) {
+                    dataString = df.format(trip.getStart())  +"," +
+                            trip.getStartLocation() + "," +
+                            trip.getStartKm() + "," +
+                            df.format(trip.getFinish()) + "," +
+                            trip.getFinishLocation() + "," +
+                            trip.getFinishKm() + "," +
+                            (trip.getFinishKm() - trip.getStartKm());
+                    bw.write(dataString);
+                    bw.newLine();
+                }
+
+                //bw.write("sadföslkj ewrwr,kölfjsf ösfkj,12/03/2018 12:45,45353,243" + "\n");
                 bw.flush();
                 bw.close();
             } catch (IOException e) {

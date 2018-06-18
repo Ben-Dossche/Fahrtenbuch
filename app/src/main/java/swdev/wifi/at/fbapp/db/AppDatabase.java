@@ -11,7 +11,11 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 @Database(entities = {Trip.class}, version = 1)
 @TypeConverters(DateConverters.class)
@@ -57,23 +61,43 @@ public abstract class AppDatabase extends RoomDatabase {
         @Override
         protected Void doInBackground(final Void... params) {
             mDao.deleteAll();
-            Date d1 = new Date();
-            Trip trip = new Trip(d1,"Stainz",104);
-            //trip.setSavedAt(d1);
-            trip.setFinishLocation("Graz");
-            trip.setFinish(d1);
-            trip.setFinishKm(200);
-            trip.setSavedAt(d1);
-            trip.setCategory(0);
-            mDao.addTrip(trip);
+            Date d1; // = new Date();
+            DateFormat dtf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.GERMAN);
+            try {
+                d1 = dtf.parse("03/06/2018 12:30");
+                Trip trip = new Trip(d1,"Stainz",104);
+                trip.setFinishLocation("Graz");
+                try {
+                    d1 = dtf.parse("03/06/2018 13:15");
+                    trip.setFinish(d1);
+                    trip.setFinishKm(200);
+                    trip.setSavedAt(d1);
+                    trip.setCategory(0);
+                    mDao.addTrip(trip);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
 
-            Trip trip2 = new Trip(d1,"Graz",100);
-            trip2.setFinishLocation("Stainz");
-            trip2.setFinish(d1);
-            trip2.setCategory(0);
-            trip2.setSavedAt(d1);
-            trip2.setFinishKm(153);
-            mDao.addTrip(trip2);
+            try {
+                d1 = dtf.parse("05/06/2018 14:10");
+                Trip trip2 = new Trip(d1,"Graz",100);
+                trip2.setFinishLocation("Stainz");
+                try {
+                    d1 = dtf.parse("05/06/2018 14:53");
+                    trip2.setFinish(d1);
+                    trip2.setCategory(0);
+                    trip2.setSavedAt(d1);
+                    trip2.setFinishKm(153);
+                    mDao.addTrip(trip2);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             return null;
         }
     }

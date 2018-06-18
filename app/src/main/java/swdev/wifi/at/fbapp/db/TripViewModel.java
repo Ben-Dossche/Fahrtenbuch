@@ -25,7 +25,7 @@ public class TripViewModel extends AndroidViewModel {
         return mAllTrips;
     }
 
-    public List<Trip> GetTripsForTimeFrame(Date dayStart, Date dayEnd) { return mRepository.GetTripsForTimeFrame(dayStart,dayEnd); }
+    public List<Trip> GetTripsForTimeFrame(Long dateStart, Long dateEnd) { return mRepository.GetTripsForTimeFrame(dateStart,dateEnd); }
 
 //    public LiveData<List<Trip>> getAllOpenTrips() { return mAllOpenTrips;}
 
