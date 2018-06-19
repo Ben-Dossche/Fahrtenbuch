@@ -164,9 +164,14 @@ public class MainFBActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
+        if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.action_export) {
+            exportData();
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -318,7 +323,7 @@ public class MainFBActivity extends AppCompatActivity {
         }
 
 
-    public void exportData(MenuItem item) {
+    public void exportData() {
         if (mTripViewModel.openTrips()) { //(mTripViewModel.activeTrips()) {
             Toast.makeText(
                     getApplicationContext(),

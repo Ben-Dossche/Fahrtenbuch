@@ -2,6 +2,8 @@ package swdev.wifi.at.fbapp;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -44,6 +46,7 @@ public class NewTripActivity extends AppCompatActivity implements DatePickerDial
     private Switch swCat;
     private ImageButton btRetourTrip;
     private ImageButton btLastKm;
+    private ImageButton btHome;
     
     private String lastStartLocation;
     private String lastEndLocation;
@@ -64,6 +67,7 @@ public class NewTripActivity extends AppCompatActivity implements DatePickerDial
         etStartAddress = findViewById(R.id.ET_StartAddress);
         btRetourTrip = findViewById(R.id.BT_RetourTrip);
         btLastKm = findViewById(R.id.BT_LastKm);
+        btHome = findViewById(R.id.BT_Home);
         replyEndLocation = "---";
         
         //RETRIEVE LAST TRIP INFO AND IF PRESENT THEN DISPLAY RETOURTRIP BUTTON
@@ -185,6 +189,16 @@ public class NewTripActivity extends AppCompatActivity implements DatePickerDial
                 if (lastEndKm > 0) {
                     etStartKm.setText(""+lastEndKm);
                 }
+            }
+        });
+
+        //HOME BUTTON CLICK
+        btHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                etStartAddress.setText(preferences.getString("heimat_adresse", ""));
+                etStartLocation.setText(preferences.getString("heimat_ort", ""));
             }
         });
 

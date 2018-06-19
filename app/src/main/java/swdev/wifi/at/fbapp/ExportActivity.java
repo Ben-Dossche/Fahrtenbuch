@@ -2,6 +2,8 @@ package swdev.wifi.at.fbapp;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -48,10 +50,15 @@ public class ExportActivity extends AppCompatActivity {
         btDateEnd = findViewById(R.id.BT_ExportEndCalenderDlg);
         btDateStart = findViewById(R.id.BT_ExportStartCalenderDlg);
 
-        //BY DEFAULT: FILL IN CURRENT DATE AS TILL DATE
+        //BY DEFAULT:
+        // FILL IN CURRENT DATE AS TILL DATE
         Date d1 = new Date();
         final DateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.GERMAN);
         etTill.setText(df.format(d1));
+        // FILL IN DEFAULT EXPORT MAIL ADDRESS
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String email = preferences.getString("export_email", "");
+        etEmail.setText(email);
 
         //EXPORT BUTTON CLICK
         btExport.setOnClickListener(new View.OnClickListener() {
