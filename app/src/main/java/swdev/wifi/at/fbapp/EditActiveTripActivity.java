@@ -1,9 +1,20 @@
 package swdev.wifi.at.fbapp;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Geocoder;
+import android.location.Location;
+import android.os.Handler;
+import android.os.ResultReceiver;
+import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,9 +23,14 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -24,6 +40,9 @@ import java.util.Date;
 import java.util.Locale;
 
 import swdev.wifi.at.fbapp.db.Trip;
+
+import static swdev.wifi.at.fbapp.FetchAddressIntentService.Constants.LOCATION_DATA_EXTRA;
+import static swdev.wifi.at.fbapp.FetchAddressIntentService.Constants.RESULT_DATA_KEY;
 
 public class EditActiveTripActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
@@ -59,7 +78,13 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
     private EditText etNote;
     private EditText etEndAddress;
     private Switch swCat;
+    private ImageButton btHome;
+    private ImageButton btGpsLocation;
+    private ProgressBar progressBar;
 
+    protected Location lastKnowLocation;
+    private FusedLocationProviderClient locationClient;
+    private EditActiveTripActivity.AddressResultReceiver resultReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +101,12 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
         etNote = findViewById(R.id.ET_EndNote);
         swCat = findViewById(R.id.SW_EndCategory);
         etEndAddress = findViewById(R.id.ET_EndAddress);
+        btHome = findViewById(R.id.BT_EndHome);
+        btGpsLocation = findViewById(R.id.BT_EndGPSLocation);
+        progressBar = findViewById(R.id.progressBar);
+
+        locationClient = new FusedLocationProviderClient(this);
+        resultReceiver = new EditActiveTripActivity.AddressResultReceiver(new Handler());
 
         builder = new AlertDialog.Builder(this);
         builder.setTitle("Aktive Fahrt löschen");
@@ -184,9 +215,7 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
             }
         });
 
-
-        final ImageButton btDate = findViewById(R.id.BT_EndCalenderDlg);
-        btDate.setOnClickListener(new View.OnClickListener() {
+        etEndDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Date date;
@@ -198,7 +227,12 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
                     int year = cal.get(Calendar.YEAR);
                     int month = cal.get(Calendar.MONTH);
                     int day = cal.get(Calendar.DAY_OF_MONTH);
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(EditActiveTripActivity.this, EditActiveTripActivity.this, year, month, day);
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(EditActiveTripActivity.this, new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                            etEndDate.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+                        }
+                    }, year, month, day);
                     datePickerDialog.show();
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -207,6 +241,34 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
             }
         });
 
+        etEndTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Date date;
+                try {
+                    DateFormat dtf = new SimpleDateFormat("HH:mm", Locale.GERMAN);
+                    date = dtf.parse(etEndTime.getText().toString());
+                    Calendar mcurrentTime = Calendar.getInstance();
+                    mcurrentTime.setTime(date);
+                    int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                    int minute = mcurrentTime.get(Calendar.MINUTE);
+                    TimePickerDialog mTimePicker;
+                    mTimePicker = new TimePickerDialog(EditActiveTripActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                            etEndTime.setText(selectedHour + ":" + selectedMinute);
+                        }
+                    }, hour, minute, true);//Yes 24 hour time
+                    mTimePicker.setTitle("Select Time");
+                    mTimePicker.show();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+        //DELETE BUTTON CLICK
         final ImageButton btDelete = findViewById(R.id.BT_Delete);
         btDelete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -216,8 +278,26 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
             }
         });
 
-        findViewById(R.id.ET_EndAddress).requestFocus();
+        //HOME BUTTON CLICK
+        btHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                etEndAddress.setText(preferences.getString("heimat_adresse", ""));
+                etEndLocation.setText(preferences.getString("heimat_ort", ""));
+            }
+        });
 
+        //GPS BUTTON CLICK
+        btGpsLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GetGPSLocation();
+            }
+        });
+
+
+        findViewById(R.id.ET_EndAddress).requestFocus();
 
     }
 
@@ -225,4 +305,101 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         etEndDate.setText(dayOfMonth+"/"+(month+1)+"/"+year);
     }
+
+    private void GetGPSLocation() {
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            return;
+        }
+        proceedGPSLocation();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
+            proceedGPSLocation();
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private void proceedGPSLocation() {
+        locationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+
+                        lastKnowLocation = location;
+
+                        if (lastKnowLocation == null) {
+                            Toast.makeText(getApplicationContext(), "Keine Location verfügbar! GPS aktiv?", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        if (!Geocoder.isPresent()) {
+                            Toast.makeText(getApplicationContext(), "Geocoder nicht verfügbar", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        progressBar.setVisibility(View.VISIBLE);
+
+                        Intent intent = new Intent(getApplicationContext(), FetchAddressIntentService.class);
+                        intent.putExtra(FetchAddressIntentService.Constants.RECEIVER, resultReceiver);
+                        intent.putExtra(LOCATION_DATA_EXTRA, lastKnowLocation);
+
+                        startService(intent);
+                    }
+                });
+    }
+
+
+    private class AddressResultReceiver extends ResultReceiver {
+
+        /**
+         * Create a new ResultReceive to receive results.  Your
+         * {@link #onReceiveResult} method will be called from the thread running
+         * <var>handler</var> if given, or from an arbitrary thread if null.
+         *
+         * @param handler
+         */
+        public AddressResultReceiver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+
+            //button.setEnabled(true);
+            progressBar.setVisibility(View.INVISIBLE);
+
+            if (resultData == null) {
+                return;
+            }
+
+            String addressOutput = resultData.getString(RESULT_DATA_KEY);
+
+            if (addressOutput == null) {
+                addressOutput = "";
+            }
+
+            //Toast.makeText(getApplicationContext(), "Adresse: " + addressOutput, Toast.LENGTH_SHORT).show();
+
+            String[] sData;
+            sData = addressOutput.split(",");
+            if (sData.length == 2) {
+                etEndAddress.setText(sData[0]);
+                etEndLocation.setText(sData[1]);
+            } else if (sData.length == 3) {
+                etEndAddress.setText(sData[0]);
+                etEndLocation.setText(sData[1] + " " + sData[2]);
+            } else {
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Adresse konnte nicht erfasst werden:...",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
+
 }

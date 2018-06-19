@@ -5,10 +5,13 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -22,6 +25,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -31,6 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
 
 import swdev.wifi.at.fbapp.db.Trip;
 import swdev.wifi.at.fbapp.db.TripViewModel;
@@ -50,6 +56,8 @@ public class MainFBActivity extends AppCompatActivity {
     private Long exportFrom;
     private Long exportTill;
     private String  exportCat;
+
+
 
     private View.OnClickListener itemClickListener = new View.OnClickListener() {
         @Override
@@ -99,6 +107,11 @@ public class MainFBActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main_fb);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //in order to avoid the following error on Android 8:
+        //android.os.FileUriExposedException: file:///storage/emulated/0/Download/fahrtenbuchdata.csv exposed beyond app through ClipData.Item.getUri()
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -444,7 +457,7 @@ public class MainFBActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     Toast.makeText(
                             getApplicationContext(),
-                            "Export exception",
+                            "Export fehlgeschlagen",
                             Toast.LENGTH_LONG).show();
 
                 }
@@ -466,30 +479,36 @@ public class MainFBActivity extends AppCompatActivity {
                         sendIntent.putExtra(Intent.EXTRA_TEXT, "Fahrtenbuch daten...");
                         sendIntent.putExtra(Intent.EXTRA_STREAM, u1);
                         startActivity(sendIntent);
+
+                        Toast.makeText(
+                                getApplicationContext(),
+                                "Export fertig",
+                                Toast.LENGTH_SHORT).show();
+
                     }
                 } catch (Throwable t) {
+                    t.printStackTrace();
+
                     Toast.makeText(
                             getApplicationContext(),
-                            "mail failed",
+                            "Email fehlgeschlagen",
                             Toast.LENGTH_LONG).show();
                 }
 //*/
-                Toast.makeText(
-                        getApplicationContext(),
-                        "Export fertig",
-                        Toast.LENGTH_LONG).show();
 
             }
 
         } else {
             Toast.makeText(
                     getApplicationContext(),
-                    "Export fehlgeschlagen",
+                    "Export fehlgeschlagen:keine Schreibrechte",
                     Toast.LENGTH_LONG).show();
         }
 
 
     }
+
+
 
 
 

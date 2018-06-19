@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="swdev.wifi.at.fbapp">
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
@@ -33,7 +35,11 @@
         <activity
             android:name=".ExportActivity"
             android:label="Export" />
-        <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".SettingsActivity" />
+
+        <service
+            android:name=".FetchAddressIntentService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

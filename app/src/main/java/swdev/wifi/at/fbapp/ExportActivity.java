@@ -34,8 +34,6 @@ public class ExportActivity extends AppCompatActivity {
     private EditText etEmail;
     private Spinner spCat;
     private Button btExport;
-    private ImageButton btDateStart;
-    private ImageButton btDateEnd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +45,6 @@ public class ExportActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.ET_ExportEmail);
         spCat = findViewById(R.id.SP_ExportSpin);
         btExport = findViewById(R.id.BT_ExportStart);
-        btDateEnd = findViewById(R.id.BT_ExportEndCalenderDlg);
-        btDateStart = findViewById(R.id.BT_ExportStartCalenderDlg);
 
         //BY DEFAULT:
         // FILL IN CURRENT DATE AS TILL DATE
@@ -101,13 +97,13 @@ public class ExportActivity extends AppCompatActivity {
             }
         });
 
-        //START DATE BUTTON CLICK
+        //START DATE  CLICK
         final DatePickerDialog.OnDateSetListener from_dateListener = new DatePickerDialog.OnDateSetListener() {
             public void onDateSet(DatePicker arg0, int year, int month, int dayOfMonth) {
                 etFrom.setText(dayOfMonth+"/"+(month+1)+"/"+year);
             }
         };
-        btDateStart.setOnClickListener(new View.OnClickListener() {
+        etFrom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Date date;
@@ -137,7 +133,7 @@ public class ExportActivity extends AppCompatActivity {
                 etTill.setText(dayOfMonth+"/"+(month+1)+"/"+year);
             }
         };
-        btDateEnd.setOnClickListener(new View.OnClickListener() {
+        etTill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Date date;
@@ -160,7 +156,6 @@ public class ExportActivity extends AppCompatActivity {
                 }
             }
         });
-
 
     }
 

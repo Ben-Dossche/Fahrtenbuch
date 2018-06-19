@@ -20,7 +20,7 @@
                 android:id="@+id/TV_ActiveInfo1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Abfahrt:"
+                android:text="@string/abfahrt"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:layout_alignParentTop="true"
@@ -80,7 +80,7 @@
                 android:id="@+id/TV_End"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
-                android:text="Ankunft"
+                android:text="@string/ankunft"
                 android:layout_alignEnd="@+id/TV_ActiveInfo1"
                 android:layout_alignStart="@+id/TV_ActiveInfo1"
                 android:layout_below="@+id/TV_ActiveInfo4"
@@ -95,23 +95,11 @@
                 android:layout_height="wrap_content"
                 android:layout_alignEnd="@+id/TV_End"
                 android:layout_alignStart="@+id/TV_End"
-                android:layout_marginRight="25dp"
                 android:layout_below="@+id/TV_End"
                 android:ems="10"
-                android:hint="Datum (tt/mm/yyyy)*"
+                android:hint="@string/datum_tt_mm_yyyy"
                 android:inputType="date" />
 
-            <ImageButton
-                android:id="@+id/BT_EndCalenderDlg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@id/ET_EndDate"
-                android:layout_marginTop="12dp"
-                android:layout_marginRight="15dp"
-                android:layout_alignEnd="@id/TV_End"
-                android:layout_alignParentEnd="true"
-                android:background="@null"
-                app:srcCompat="@drawable/ic_next_week_black_24dp" />
             <EditText
                 android:id="@+id/ET_EndTime"
                 android:layout_width="match_parent"
@@ -121,7 +109,7 @@
                 android:layout_below="@+id/ET_EndDate"
                 android:layout_centerHorizontal="true"
                 android:ems="10"
-                android:hint="Zeit (hh:mm)*"
+                android:hint="@string/zeit_hh_mm"
                 android:inputType="time" />
 
             <EditText
@@ -132,8 +120,32 @@
                 android:layout_alignStart="@+id/TV_End"
                 android:layout_below="@+id/ET_EndTime"
                 android:ems="10"
-                android:hint="Addresse Ankunft*"
+                android:layout_marginRight="45dp"
+                android:hint="@string/addresse_ankunft"
                 android:inputType="textPersonName" />
+
+            <ImageButton
+                android:id="@+id/BT_EndHome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/ET_EndAddress"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="15dp"
+                android:layout_alignEnd="@id/TV_End"
+                android:layout_alignParentEnd="true"
+                android:background="@null"
+                app:srcCompat="@drawable/ic_home_black_24dp" />
+            <ImageButton
+                android:id="@+id/BT_EndGPSLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/ET_EndAddress"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="40dp"
+                android:layout_alignEnd="@id/TV_End"
+                android:layout_alignParentEnd="true"
+                android:background="@null"
+                app:srcCompat="@drawable/ic_gps_black_24dp" />
 
             <EditText
                 android:id="@+id/ET_EndLocation"
@@ -143,7 +155,7 @@
                 android:layout_alignStart="@+id/TV_End"
                 android:layout_below="@+id/ET_EndAddress"
                 android:ems="10"
-                android:hint="Ort Ankunft*"
+                android:hint="@string/ort_ankunft"
                 android:inputType="textPersonName" />
 
             <EditText
@@ -155,7 +167,7 @@
                 android:layout_below="@+id/ET_EndLocation"
                 android:layout_centerHorizontal="true"
                 android:ems="10"
-                android:hint="Kilometerstand*"
+                android:hint="@string/kilometerstand"
                 android:inputType="number" />
 
             <EditText
@@ -166,7 +178,7 @@
                 android:layout_alignStart="@+id/TV_End"
                 android:layout_below="@+id/ET_EndKm"
                 android:ems="10"
-                android:hint="Zweck"
+                android:hint="@string/zweck"
                 android:inputType="textPersonName" />
 
             <Switch
@@ -178,7 +190,7 @@
                 android:layout_marginTop="20dp"
                 android:checked="true"
                 android:ems="10"
-                android:text="Beruflich"
+                android:text="@string/beruflich"
                 android:textSize="18sp" />
 
             <Button
@@ -193,7 +205,15 @@
                 android:layout_marginTop="25dp"
                 android:background="@color/colorAccent"
                 android:textColor="#ffffff"
-                android:text="Fahrt beenden" />
+                android:text="@string/fahrt_beenden" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                android:layout_centerInParent="true" />
 
 
         </RelativeLayout>

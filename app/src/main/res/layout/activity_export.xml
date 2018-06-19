@@ -26,19 +26,8 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="20dp"
                 android:ems="10"
-                android:hint="Von (tt/mm/yyyy)*"
+                android:hint="@string/von_tt_mm_yyyy"
                 android:inputType="date" />
-            <ImageButton
-                android:id="@+id/BT_ExportStartCalenderDlg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@id/ET_ExportStartDate"
-                android:layout_marginTop="12dp"
-                android:layout_marginRight="15dp"
-                android:layout_alignEnd="@id/ET_ExportStartDate"
-                android:layout_alignParentEnd="true"
-                android:background="@null"
-                app:srcCompat="@drawable/ic_next_week_black_24dp" />
 
             <EditText
                 android:id="@+id/ET_ExportEndDate"
@@ -49,19 +38,8 @@
                 android:layout_below="@+id/ET_ExportStartDate"
                 android:layout_centerHorizontal="true"
                 android:ems="10"
-                android:hint="Bis (tt/mm/yyyy)*"
+                android:hint="@string/bis_tt_mm_yyyy"
                 android:inputType="date" />
-            <ImageButton
-                android:id="@+id/BT_ExportEndCalenderDlg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@id/ET_ExportEndDate"
-                android:layout_marginTop="12dp"
-                android:layout_marginRight="15dp"
-                android:layout_alignEnd="@id/ET_ExportStartDate"
-                android:layout_alignParentEnd="true"
-                android:background="@null"
-                app:srcCompat="@drawable/ic_next_week_black_24dp" />
 
 
             <EditText
@@ -72,7 +50,7 @@
                 android:layout_alignStart="@+id/ET_ExportStartDate"
                 android:layout_below="@+id/ET_ExportEndDate"
                 android:ems="10"
-                android:hint="Email*"
+                android:hint="@string/email"
                 android:inputType="textEmailAddress" />
 
             <Button
@@ -87,7 +65,7 @@
                 android:layout_marginTop="25dp"
                 android:background="@color/colorAccent"
                 android:textColor="#ffffff"
-                android:text="Daten Exportieren" />
+                android:text="@string/daten_exportieren" />
 
             <Spinner
                 android:id="@+id/SP_ExportSpin"

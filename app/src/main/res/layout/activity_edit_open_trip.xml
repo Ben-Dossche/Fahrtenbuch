@@ -20,7 +20,7 @@
                 android:id="@+id/TV_OpenInfo1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Abfahrt:"
+                android:text="@string/abfahrt"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:layout_alignParentTop="true"
@@ -70,7 +70,7 @@
                 android:id="@+id/TV_OpenInfo5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Ankunft:"
+                android:text="@string/ankunft2"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:layout_below="@+id/TV_OpenInfo4"
@@ -120,7 +120,7 @@
                 android:id="@+id/TV_EndOpen"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
-                android:text="Fahrtinfo"
+                android:text="@string/fahrtinfo"
                 android:layout_alignEnd="@+id/TV_OpenInfo1"
                 android:layout_alignStart="@+id/TV_OpenInfo1"
                 android:layout_below="@+id/TV_OpenInfo8"
@@ -137,7 +137,7 @@
                 android:layout_alignStart="@+id/TV_OpenInfo1"
                 android:layout_below="@+id/TV_EndOpen"
                 android:ems="10"
-                android:hint="Zweck"
+                android:hint="@string/zweck"
                 android:inputType="textPersonName" />
 
             <Switch
@@ -149,7 +149,7 @@
                 android:layout_marginTop="20dp"
                 android:checked="true"
                 android:ems="10"
-                android:text="Beruflich"
+                android:text="@string/beruflich"
                 android:textSize="18sp" />
 
             <Button
@@ -164,7 +164,7 @@
                 android:layout_marginTop="25dp"
                 android:background="@color/colorAccent"
                 android:textColor="#ffffff"
-                android:text="Fahrt speichern" />
+                android:text="@string/fahrt_speichern" />
 
         </RelativeLayout>
 
