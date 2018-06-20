@@ -118,22 +118,10 @@
                 android:layout_alignStart="@+id/TV_Start"
                 android:layout_below="@+id/ET_StartLocation"
                 android:layout_centerHorizontal="true"
-                android:layout_marginRight="25dp"
                 android:ems="10"
                 android:hint="@string/kilometerstand"
                 android:inputType="number" />
 
-            <ImageButton
-                android:id="@+id/BT_LastKm"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@id/ET_StartKm"
-                android:layout_marginTop="12dp"
-                android:layout_marginRight="15dp"
-                android:layout_alignEnd="@id/TV_Start"
-                android:layout_alignParentEnd="true"
-                android:background="@null"
-                app:srcCompat="@drawable/ic_renew_black_24dp" />
             <EditText
                 android:id="@+id/ET_Note"
                 android:layout_width="match_parent"

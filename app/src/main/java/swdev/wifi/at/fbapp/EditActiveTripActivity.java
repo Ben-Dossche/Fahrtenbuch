@@ -39,6 +39,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import swdev.wifi.at.fbapp.db.DateConverters;
 import swdev.wifi.at.fbapp.db.Trip;
 
 import static swdev.wifi.at.fbapp.FetchAddressIntentService.Constants.LOCATION_DATA_EXTRA;
@@ -52,6 +53,7 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
     public static final String EXTRA_REPLY_TRIPSTARTKM = "startkm";
     public static final String EXTRA_REPLY_TRIPSTARTNOTE = "startnote";
     public static final String EXTRA_REPLY_TRIPSTARTCAT = "startcat";
+    public static final String EXTRA_REPLY_TRIPSTARTDATETIMEASLONG = "startdtaslong";
 
     public static final String EXTRA_REPLY_ENDLOCATION = "endlocation";
     public static final String EXTRA_REPLY_ENDKM = "endkm";
@@ -68,6 +70,7 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
 
     private int tripId;
     private int tripStartKm;
+    private Date startDate;
     TextView TV_Info1;
     TextView TV_Info2;
     TextView TV_Info3;
@@ -129,12 +132,13 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
         });
 
         tripId = getIntent().getExtras().getInt(EXTRA_REPLY_TRIPID);
+
         TV_Info2.setText(getIntent().getExtras().getString(EXTRA_REPLY_TRIPSTARTLOC));
         TV_Info1.setText(getIntent().getExtras().getString(EXTRA_REPLY_TRIPSTARTDATETIME));
         TV_Info2.setText(getIntent().getExtras().getString(EXTRA_REPLY_TRIPSTARTLOC));
         TV_Info3.setText("Kilometerstand: " + getIntent().getExtras().getInt(EXTRA_REPLY_TRIPSTARTKM) + " km");
         tripStartKm = getIntent().getExtras().getInt(EXTRA_REPLY_TRIPSTARTKM);
-
+        startDate = DateConverters.fromTimestamp(getIntent().getExtras().getLong(EXTRA_REPLY_TRIPSTARTDATETIMEASLONG));
         /* FEATURE DISABLED
         //IF PRESENT FILL IN ENDLOCATION DATA (RETOUR TRIP)
         String endLocation = getIntent().getExtras().getString(EXTRA_REPLY_ENDLOCATION);
@@ -164,7 +168,7 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
             @Override
             public void onClick(View v) {
                 Intent replyintent = new Intent();
-                Date dstart;
+                Date finishDate;
 
                 //obligatory fields must have data
                 if ((TextUtils.isEmpty(etEndLocation.getText())) ||
@@ -188,6 +192,26 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
                     return;
                 }
 
+                //finish datetime must be > startdate
+                try {
+                    DateFormat dtf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.GERMAN);
+                    finishDate = dtf.parse(etEndDate.getText().toString() + " " + etEndTime.getText().toString());
+                    if (!finishDate.after(startDate)) {
+                        Toast.makeText(
+                                getApplicationContext(),
+                                "Datum-Zeit ungültig (<= Startzeit)...",
+                                Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    Toast.makeText(
+                            getApplicationContext(),
+                            "Problem mit Datum/Zeit ...",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 replyintent.putExtra(EXTRA_REPLY_ACTION, EXTRA_ACTION_UPDATE);
                 replyintent.putExtra(EXTRA_REPLY_ENDTRIPID, tripId);
                 replyintent.putExtra(EXTRA_REPLY_ENDLOCATION, etEndAddress.getText().toString() + " - " + etEndLocation.getText().toString());
@@ -202,13 +226,7 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
                 }
 
                 //we store date and time as a long
-                try {
-                    DateFormat dtf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.GERMAN);
-                    dstart = dtf.parse(etEndDate.getText().toString() + " " + etEndTime.getText().toString());
-                    replyintent.putExtra(EXTRA_REPLY_ENDDATETIME, dstart.getTime());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                replyintent.putExtra(EXTRA_REPLY_ENDDATETIME, finishDate.getTime());
 
                 setResult(RESULT_OK, replyintent);
                 finish();

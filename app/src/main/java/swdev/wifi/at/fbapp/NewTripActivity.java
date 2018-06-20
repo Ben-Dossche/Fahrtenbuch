@@ -62,7 +62,6 @@ public class NewTripActivity extends AppCompatActivity  {
     private EditText etStartAddress;
     private Switch swCat;
     private ImageButton btRetourTrip;
-    private ImageButton btLastKm;
     private ImageButton btHome;
     private ImageButton btGpsLocation;
 
@@ -89,7 +88,6 @@ public class NewTripActivity extends AppCompatActivity  {
         swCat = findViewById(R.id.SW_Category);
         etStartAddress = findViewById(R.id.ET_StartAddress);
         btRetourTrip = findViewById(R.id.BT_RetourTrip);
-        btLastKm = findViewById(R.id.BT_LastKm);
         btHome = findViewById(R.id.BT_Home);
         btGpsLocation = findViewById(R.id.BT_GPSLocation);
         replyEndLocation = "---";
@@ -103,6 +101,7 @@ public class NewTripActivity extends AppCompatActivity  {
         if (!lastStartLocation.equals("---")) {
             lastEndLocation = getIntent().getExtras().getString(EXTRA_LASTENDLOCATION);
             lastEndKm = getIntent().getExtras().getInt(EXTRA_LASTENDKM);
+            etStartKm.setText("" + lastEndKm);
             btRetourTrip.setVisibility(View.VISIBLE);
         } else {
             btRetourTrip.setVisibility(View.GONE);
@@ -241,15 +240,6 @@ public class NewTripActivity extends AppCompatActivity  {
             }
         });
 
-        //LASTKM BUTTON CLICK
-        btLastKm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (lastEndKm > 0) {
-                    etStartKm.setText("" + lastEndKm);
-                }
-            }
-        });
 
         //HOME BUTTON CLICK
         btHome.setOnClickListener(new View.OnClickListener() {

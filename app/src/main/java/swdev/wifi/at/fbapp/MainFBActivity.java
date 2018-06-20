@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Locale;
 
 
+import swdev.wifi.at.fbapp.db.DateConverters;
 import swdev.wifi.at.fbapp.db.Trip;
 import swdev.wifi.at.fbapp.db.TripViewModel;
 
@@ -73,7 +74,6 @@ public class MainFBActivity extends AppCompatActivity {
                 intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPSTARTKM, trip.getStartKm());
                 intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPSTARTNOTE, trip.getNote());
                 intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPSTARTCAT, trip.getCategory());
-
                 intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_ENDLOCATION, trip.getFinishLocation());
                 intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_ENDKM, trip.getFinishKm());
                 intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_ENDDATETIME, df.format(trip.getFinish()));
@@ -85,10 +85,12 @@ public class MainFBActivity extends AppCompatActivity {
                 intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPID, trip._id);
                 intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPSTARTLOC, trip.getStartLocation());
                 intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPSTARTDATETIME, df.format(trip.getStart()));
+                intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPSTARTDATETIMEASLONG, DateConverters.dateToTimestamp(trip.getStart()));
                 intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPSTARTKM, trip.getStartKm());
                 intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPSTARTNOTE, trip.getNote());
                 intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPSTARTCAT, trip.getCategory());
-                /*FEATURE DISABLED
+                /*
+                FEATURE DISABLED
                 //pass endlocation if present (retourtrip)
                 if (trip.getFinishLocation() != null && !trip.getFinishLocation().isEmpty()) {
                     intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_ENDLOCATION, trip.getFinishLocation());
