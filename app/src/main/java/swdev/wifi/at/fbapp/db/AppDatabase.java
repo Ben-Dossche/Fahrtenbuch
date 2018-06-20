@@ -63,16 +63,54 @@ public abstract class AppDatabase extends RoomDatabase {
             mDao.deleteAll();
             Date d1; // = new Date();
             DateFormat dtf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.GERMAN);
+
+            try {
+                d1 = dtf.parse("15/05/2018 12:30");
+                Trip trip = new Trip(d1,"Stainz bei Straden 113 - 8345 Straden",104);
+                trip.setFinishLocation("Körblergasse 111 - 8010 Graz");
+                try {
+                    d1 = dtf.parse("15/05/2018 13:15");
+                    trip.setFinish(d1);
+                    trip.setFinishKm(187);
+                    trip.setSavedAt(d1);
+                    trip.setCategory(1);
+                    mDao.addTrip(trip);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                d1 = dtf.parse("17/05/2018 12:30");
+                Trip trip = new Trip(d1,"Stainz bei Straden 113 - 8345 Straden",187);
+                trip.setFinishLocation("Hauptplatz 1 - 8010 Graz");
+                try {
+                    d1 = dtf.parse("17/05/2018 13:45");
+                    trip.setFinish(d1);
+                    trip.setFinishKm(265);
+                    trip.setSavedAt(d1);
+                    trip.setCategory(1);
+                    mDao.addTrip(trip);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+
             try {
                 d1 = dtf.parse("03/06/2018 12:30");
-                Trip trip = new Trip(d1,"Stainz",104);
-                trip.setFinishLocation("Graz");
+                Trip trip = new Trip(d1,"Stainz bei Straden 113 - 8345 Straden",298);
+                trip.setFinishLocation("Körblergasse 111 - 8010 Graz");
                 try {
                     d1 = dtf.parse("03/06/2018 13:15");
                     trip.setFinish(d1);
-                    trip.setFinishKm(200);
+                    trip.setFinishKm(375);
                     trip.setSavedAt(d1);
-                    trip.setCategory(0);
+                    trip.setCategory(1);
                     mDao.addTrip(trip);
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -83,14 +121,14 @@ public abstract class AppDatabase extends RoomDatabase {
 
             try {
                 d1 = dtf.parse("05/06/2018 14:10");
-                Trip trip2 = new Trip(d1,"Graz",100);
-                trip2.setFinishLocation("Stainz");
+                Trip trip2 = new Trip(d1,"Grazerstraße 23 - 8344 Bad Gleichenberg",375);
+                trip2.setFinishLocation("Mühldorfstraße 123 - 8330 Feldbach");
                 try {
                     d1 = dtf.parse("05/06/2018 14:53");
                     trip2.setFinish(d1);
                     trip2.setCategory(1);
                     trip2.setSavedAt(d1);
-                    trip2.setFinishKm(153);
+                    trip2.setFinishKm(441);
                     mDao.addTrip(trip2);
                 } catch (ParseException e) {
                     e.printStackTrace();
