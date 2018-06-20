@@ -33,6 +33,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -188,8 +190,7 @@ public class MainFBActivity extends AppCompatActivity {
             exportData();
             return true;
         } else if (id == R.id.action_stat) {
-            Intent intent = new Intent(this, ChartActivity.class);
-            startActivity(intent);
+            createChart4Past12Months();
             return true;
         }
 
@@ -516,7 +517,70 @@ public class MainFBActivity extends AppCompatActivity {
     }
 
 
+    private void createChart4Past12Months() {
+        if (mTripViewModel.openTrips()) { //(mTripViewModel.activeTrips()) {
+            Toast.makeText(
+                    getApplicationContext(),
+                    "Grafik nicht möglich, nicht alle Fahrten sind gespeichert...",
+                    Toast.LENGTH_LONG).show();
+        } else {
+            //DEFINE TIMEFRAME (PAST 12 MONTHS)
+            List<Trip> tripsLastYear;
+            Date dNow = new Date();
+            Calendar c = Calendar.getInstance();
+            c.setTime(dNow);
+            Calendar c2 = Calendar.getInstance();
+            c2.set(Calendar.DATE, 1);
+            c2.set(Calendar.YEAR, c.get(Calendar.YEAR) - 1);
+            c2.set(Calendar.MONTH, c.get(Calendar.MONTH) + 1);
+            Date dStart = c2.getTime();
+            final DateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.GERMAN);
+            Log.d("TAG", df.format(dStart));
+
+            //RETRIEVE TRIPDATA FOR PAST 12 MONTHS
+            tripsLastYear = mTripViewModel.GetTripsForTimeFrame(DateConverters.dateToTimestamp(dStart), DateConverters.dateToTimestamp(dNow));
+            if (tripsLastYear.size() == 0) {
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Keine Fahrten verfügbar für Grafik...",
+                        Toast.LENGTH_LONG).show();
+            } else {
+                //PREPARE DATA FOR CHART
+                int[] busTrips = new int[12];
+                int[] privTrips = new int[12];
+                int tripMonth;
+                String sBusTrips;
+                String sPrivTrips;
+                for (Trip trip : tripsLastYear) {
+                    //define month
+                    c.setTime(trip.getStart());
+                    tripMonth = c.get(Calendar.MONTH) + 1; //months are 0 based!!!
+                    //add #km to month
+                    if (trip.getCategory() == 1) {
+                        busTrips[tripMonth - 1] = trip.getFinishKm() - trip.getStartKm();
+                    } else {
+                        privTrips[tripMonth - 1] = trip.getFinishKm() - trip.getStartKm();
+                    }
+                }
+                StringBuilder sb = new StringBuilder();
+                for (int i : busTrips)
+                    sb.append(i + "").append(";");
+                sBusTrips = sb.substring(0, sb.length() - 1);
+                sb.setLength(0);
+                for (int i : privTrips)
+                    sb.append(i + "").append(";");
+                sPrivTrips = sb.substring(0, sb.length() - 1);
+                Log.d("TAG", sBusTrips);
+                Log.d("TAG", sPrivTrips);
 
 
+                //GOTO CHART:  INTENT AND PASS TRIPDATA
+                //Intent intent = new Intent(this, ChartActivity.class);
+                // TODO: 20.06.2018   intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPSTARTLOC, trip.getStartLocation());
+                //startActivity(intent);
+
+            }
+        }
+    }
 
 }

@@ -37,4 +37,9 @@ dependencies {
     annotationProcessor "android.arch.lifecycle:compiler:1.1.0"
     implementation 'com.android.support:recyclerview-v7:27.1.1'
 
+    implementation 'com.github.PhilJay:MPAndroidChart:v2.1.6'
+}
+
+repositories {
+    maven { url "https://jitpack.io" }
 }

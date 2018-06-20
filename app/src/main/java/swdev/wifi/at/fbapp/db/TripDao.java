@@ -50,5 +50,6 @@ public interface TripDao {
 
     @Query("SELECT * FROM trips WHERE start BETWEEN :daystart AND :dayend")
     List<Trip> getTripsForTimeFrame(long daystart, long dayend);
+
 }
 
