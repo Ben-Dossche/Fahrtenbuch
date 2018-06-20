@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Locale;
 
 
+import swdev.wifi.at.fbapp.db.ChartActivity;
 import swdev.wifi.at.fbapp.db.DateConverters;
 import swdev.wifi.at.fbapp.db.Trip;
 import swdev.wifi.at.fbapp.db.TripViewModel;
@@ -185,6 +186,10 @@ public class MainFBActivity extends AppCompatActivity {
             return true;
         } else if (id == R.id.action_export) {
             exportData();
+            return true;
+        } else if (id == R.id.action_stat) {
+            Intent intent = new Intent(this, ChartActivity.class);
+            startActivity(intent);
             return true;
         }
 

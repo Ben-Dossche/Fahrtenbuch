@@ -29,4 +29,11 @@
     <string name="addresse_abfarht">Addresse Abfarht*</string>
     <string name="ort_abfarht">Ort Abfarht*</string>
     <string name="fahrt_starten">Fahrt starten</string>
+    <string name="grafik">Grafik</string>
+    <string name="export">Export</string>
+    <string name="einstellungen">Einstellungen</string>
+    <string name="FarhtenGrafik">Fahrten Grafik</string>
+    <string name="offenefahrt">Offene Fahrt</string>
+    <string name="aktivefahrt">Aktive Fahrt</string>
+    <string name="neuefahrt">Neue Fahrt starten</string>
 </resources>

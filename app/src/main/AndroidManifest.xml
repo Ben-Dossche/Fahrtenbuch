@@ -25,21 +25,24 @@
         </activity>
         <activity
             android:name=".NewTripActivity"
-            android:label="Neue Fahrt starten" />
+            android:label="@string/neuefahrt" />
         <activity
             android:name=".EditActiveTripActivity"
-            android:label="Aktive Fahrt" />
+            android:label="@string/aktivefahrt" />
         <activity
             android:name=".EditOpenTripActivity"
-            android:label="Offene Fahrt" />
+            android:label="@string/offenefahrt" />
         <activity
             android:name=".ExportActivity"
-            android:label="Export" />
+            android:label="@string/export" />
         <activity android:name=".SettingsActivity" />
 
         <service
             android:name=".FetchAddressIntentService"
-            android:exported="false"></service>
+            android:exported="false" />
+
+        <activity android:name=".db.ChartActivity"
+            android:label="@string/FarhtenGrafik"></activity>
     </application>
 
 </manifest>
