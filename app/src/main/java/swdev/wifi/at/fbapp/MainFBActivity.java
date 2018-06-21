@@ -415,6 +415,7 @@ public class MainFBActivity extends AppCompatActivity {
         File file = null;
         File root = Environment.getExternalStorageDirectory();
         if (root.canWrite()){
+            final DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.GERMAN);
             //RETRIEVE TRIPDATA
             List<Trip> trips;
             if (exportCat.equals("nur berufliche Fahrten")) {
@@ -440,7 +441,6 @@ public class MainFBActivity extends AppCompatActivity {
                     bw = new BufferedWriter(new FileWriter(file, true));
                     bw.write("Abfahrt,Ort Abfahrt,Km Abfahrt,Ankunf,Ort Ankunft,Km Ankunft, Gefahrene Km, Beruflich");
                     bw.newLine();
-                    final DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.GERMAN);
                     for (Trip trip : trips) {
                         if (trip.getCategory() == 1) {
                             catString = "X";
@@ -479,12 +479,21 @@ public class MainFBActivity extends AppCompatActivity {
                         //as of android 6 in gmail app
                         //Settings->Apps->Gmail->Permissions and enable the "Storage" permission manually,
                         //otherwise attachment does not work!!!
+                        final DateFormat df2 = new SimpleDateFormat("dd/MM/yyyy", Locale.GERMAN);
                         Intent sendIntent = new Intent(Intent.ACTION_SEND);
                         sendIntent.setType("plain/text");
                         String to[] = {exportEmail};
                         sendIntent.putExtra(Intent.EXTRA_EMAIL, to);
-                        sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Fahrtenbuch Export");
-                        sendIntent.putExtra(Intent.EXTRA_TEXT, "Fahrtenbuch daten...");
+                        sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Fahrtenbuch Export " +
+                                df2.format(DateConverters.fromTimestamp(exportFrom)) +
+                                " - " +
+                                df2.format(DateConverters.fromTimestamp(exportTill)));
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, "Fahrtenbuch daten:\n"+
+                                exportCat +
+                                "\n"+
+                                df2.format(DateConverters.fromTimestamp(exportFrom)) +
+                                " - " +
+                                df2.format(DateConverters.fromTimestamp(exportTill)));
                         sendIntent.putExtra(Intent.EXTRA_STREAM, u1);
                         startActivity(sendIntent);
 
@@ -557,9 +566,9 @@ public class MainFBActivity extends AppCompatActivity {
                     tripMonth = c.get(Calendar.MONTH) + 1; //months are 0 based!!!
                     //add #km to month
                     if (trip.getCategory() == 1) {
-                        busTrips[tripMonth - 1] = trip.getFinishKm() - trip.getStartKm();
+                        busTrips[tripMonth - 1] += trip.getFinishKm() - trip.getStartKm();
                     } else {
-                        privTrips[tripMonth - 1] = trip.getFinishKm() - trip.getStartKm();
+                        privTrips[tripMonth - 1] += trip.getFinishKm() - trip.getStartKm();
                     }
                 }
                 StringBuilder sb = new StringBuilder();
@@ -570,14 +579,14 @@ public class MainFBActivity extends AppCompatActivity {
                 for (int i : privTrips)
                     sb.append(i + "").append(";");
                 sPrivTrips = sb.substring(0, sb.length() - 1);
-                Log.d("TAG", sBusTrips);
-                Log.d("TAG", sPrivTrips);
-
+                //Log.d("TAG", sBusTrips);
+                //Log.d("TAG", sPrivTrips);
 
                 //GOTO CHART:  INTENT AND PASS TRIPDATA
-                //Intent intent = new Intent(this, ChartActivity.class);
-                // TODO: 20.06.2018   intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPSTARTLOC, trip.getStartLocation());
-                //startActivity(intent);
+                Intent intent = new Intent(this, ChartActivity.class);
+                intent.putExtra(ChartActivity.EXTRA_CHART_BUSTRIPDATA, sBusTrips);
+                intent.putExtra(ChartActivity.EXTRA_CHART_PRIVTRIPDATA, sPrivTrips);
+                startActivity(intent);
 
             }
         }

@@ -64,6 +64,7 @@ public class NewTripActivity extends AppCompatActivity  {
     private ImageButton btRetourTrip;
     private ImageButton btHome;
     private ImageButton btGpsLocation;
+    private ImageButton btLastKm;
 
     private String lastStartLocation;
     private String lastEndLocation;
@@ -90,6 +91,7 @@ public class NewTripActivity extends AppCompatActivity  {
         btRetourTrip = findViewById(R.id.BT_RetourTrip);
         btHome = findViewById(R.id.BT_Home);
         btGpsLocation = findViewById(R.id.BT_GPSLocation);
+        btLastKm = findViewById(R.id.BT_LastKm);
         replyEndLocation = "---";
         progressBar = findViewById(R.id.progressBar2);
 
@@ -101,10 +103,11 @@ public class NewTripActivity extends AppCompatActivity  {
         if (!lastStartLocation.equals("---")) {
             lastEndLocation = getIntent().getExtras().getString(EXTRA_LASTENDLOCATION);
             lastEndKm = getIntent().getExtras().getInt(EXTRA_LASTENDKM);
-            etStartKm.setText("" + lastEndKm);
             btRetourTrip.setVisibility(View.VISIBLE);
+            btLastKm.setVisibility(View.VISIBLE);
         } else {
             btRetourTrip.setVisibility(View.GONE);
+            btLastKm.setVisibility(View.GONE);
         }
 
         //FILL IN CURRENT DATE & TIME BY DEFAULT
@@ -256,6 +259,14 @@ public class NewTripActivity extends AppCompatActivity  {
             @Override
             public void onClick(View v) {
                 GetGPSLocation();
+            }
+        });
+
+        //LASTKM BUTTON CLICK
+        btLastKm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                etStartKm.setText("" + lastEndKm);
             }
         });
 

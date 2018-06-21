@@ -91,7 +91,7 @@ public abstract class AppDatabase extends RoomDatabase {
                     trip.setFinish(d1);
                     trip.setFinishKm(265);
                     trip.setSavedAt(d1);
-                    trip.setCategory(1);
+                    trip.setCategory(0);
                     mDao.addTrip(trip);
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -126,7 +126,7 @@ public abstract class AppDatabase extends RoomDatabase {
                 try {
                     d1 = dtf.parse("05/06/2018 14:53");
                     trip2.setFinish(d1);
-                    trip2.setCategory(1);
+                    trip2.setCategory(0);
                     trip2.setSavedAt(d1);
                     trip2.setFinishKm(441);
                     mDao.addTrip(trip2);
@@ -136,6 +136,26 @@ public abstract class AppDatabase extends RoomDatabase {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+
+            try {
+                d1 = dtf.parse("05/09/2017 14:10");
+                Trip trip2 = new Trip(d1,"Grazerstraße 23 - 8344 Bad Gleichenberg",10);
+                trip2.setFinishLocation("Mühldorfstraße 123 - 8330 Feldbach");
+                try {
+                    d1 = dtf.parse("05/09/2017 14:53");
+                    trip2.setFinish(d1);
+                    trip2.setCategory(1);
+                    trip2.setSavedAt(d1);
+                    trip2.setFinishKm(97);
+                    mDao.addTrip(trip2);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+
             return null;
         }
     }

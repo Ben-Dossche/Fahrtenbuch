@@ -25,12 +25,19 @@ import swdev.wifi.at.fbapp.R;
 
 public class ChartActivity extends AppCompatActivity {
 
+    public static final String EXTRA_CHART_BUSTRIPDATA = "xtrabustripdata";
+    public static final String EXTRA_CHART_PRIVTRIPDATA = "xtraprivtripdata";
+
     BarChart chart ;
     ArrayList<BarEntry> BARENTRY ;
 
     ArrayList<BarEntry> group1 ;
     ArrayList<BarEntry> group2 ;
 
+    private String busTripData;
+    private String privTripData;
+    private String[] busTripList;
+    private String[] privTripList;
 
     ArrayList<String> BarEntryLabels ;
     BarDataSet Bardataset ;
@@ -46,49 +53,72 @@ public class ChartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chart);
 
-        chart = (BarChart) findViewById(R.id.chart1);
+        //GET TRIPDATA FROM INTENT
+        busTripData = getIntent().getExtras().getString(EXTRA_CHART_BUSTRIPDATA);
+        privTripData = getIntent().getExtras().getString(EXTRA_CHART_PRIVTRIPDATA);
+        busTripList = busTripData.split(";");
+        privTripList = privTripData.split(";");
+        if ((busTripList.length != 12) || (privTripList.length != 12)) {
+            Toast.makeText(
+                    getApplicationContext(),
+                    "Fehler bei Berechnung Daten...",
+                    Toast.LENGTH_LONG).show();
+            finish();
+        }
 
-        //X-AXIS labels with past 12 months
+        //PREPARE labels and bardata with past 12 months
+
+        ArrayList<BarEntry> bargroup1 = new ArrayList<>();
+        ArrayList<BarEntry> bargroup2 = new ArrayList<>();
         ArrayList<String> labels = new ArrayList<String>();
+
         Date d = new Date();
         Calendar c = Calendar.getInstance();
         c.setTime(d);
-        int month = c.get(Calendar.MONTH);
+        int month = c.get(Calendar.MONTH) + 1; //months are 0-based
         DateFormatSymbols dfs = new DateFormatSymbols(Locale.GERMANY);
         String[] germanyMonths = dfs.getMonths();
+        int barEntryIndex = 0;
         for (int i = month + 1; i < germanyMonths.length; i++) {
-            labels.add(germanyMonths[i]);
+            labels.add(germanyMonths[i - 1]);
+            bargroup1.add(new BarEntry(Integer.parseInt(busTripList[i-1]), barEntryIndex));
+            bargroup2.add(new BarEntry(Integer.parseInt(privTripList[i-1]), barEntryIndex));
+            barEntryIndex += 1;
         }
-        for (int i = 0; i <= month; i++) {
-            labels.add(germanyMonths[i]);
+        for (int i = 1; i <= month; i++) {
+            labels.add(germanyMonths[i - 1]);
+            bargroup1.add(new BarEntry(Integer.parseInt(busTripList[i-1]), barEntryIndex));
+            bargroup2.add(new BarEntry(Integer.parseInt(privTripList[i-1]), barEntryIndex));
+            barEntryIndex += 1;
         }
 
-
+        // TODO: 21.06.2018 put tripdata in arraylists for corresponding months
+/*
         // create BarEntry for Bar Group 1
-        ArrayList<BarEntry> bargroup1 = new ArrayList<>();
         bargroup1.add(new BarEntry(8f, 0));
         bargroup1.add(new BarEntry(2f, 1));
         bargroup1.add(new BarEntry(5f, 2));
         bargroup1.add(new BarEntry(20f, 3));
         bargroup1.add(new BarEntry(15f, 4));
         bargroup1.add(new BarEntry(19f, 5));
-
+*
         // create BarEntry for Bar Group 1
-        ArrayList<BarEntry> bargroup2 = new ArrayList<>();
         bargroup2.add(new BarEntry(6f, 0));
         bargroup2.add(new BarEntry(10f, 1));
         bargroup2.add(new BarEntry(5f, 2));
         bargroup2.add(new BarEntry(25f, 3));
         bargroup2.add(new BarEntry(4f, 4));
         bargroup2.add(new BarEntry(17f, 5));
-
+*/
         // creating dataset for Bar Group1
         BarDataSet barDataSet1 = new BarDataSet(bargroup1, "berufliche Fahrten");
         barDataSet1.setColor(Color.rgb(0, 155, 0));
+        barDataSet1.setDrawValues(false);
 //        barDataSet1.setColors(ColorTemplate.);
 
         // creating dataset for Bar Group 2
         BarDataSet barDataSet2 = new BarDataSet(bargroup2, "private Fahrten");
+        barDataSet2.setDrawValues(false);
 
         ArrayList<BarDataSet> dataSets = new ArrayList<>();  // combined all dataset into an arraylist
         dataSets.add(barDataSet1);
@@ -96,8 +126,9 @@ public class ChartActivity extends AppCompatActivity {
 
         // initialize the Bardata with argument labels and dataSets
         BarData data = new BarData(labels, dataSets);
+        chart = (BarChart) findViewById(R.id.chart1);
         chart.setData(data);
-
+        chart.setDescription("Gefahrene Km (letzte 12 Monate)");
         chart.animateY(3000);
     }
 
