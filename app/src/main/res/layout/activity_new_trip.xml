@@ -53,23 +53,22 @@
                 android:ems="10"
                 android:hint="@string/zeit_hh_mm"
                 android:inputType="time" />
-
-            <EditText
-                android:id="@+id/ET_StartAddress"
+            <AutoCompleteTextView
+                android:id="@+id/ACTV_StartAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/TV_Start"
-                android:layout_alignStart="@+id/TV_Start"
-                android:layout_below="@+id/ET_StartTime"
+                android:layout_alignEnd="@id/TV_Start"
+                android:layout_alignStart="@id/TV_Start"
+                android:layout_below="@id/ET_StartTime"
                 android:layout_marginRight="65dp"
-                android:ems="10"
-                android:hint="@string/addresse_abfarht"
-                android:inputType="textPersonName" />
+                android:inputType="textNoSuggestions"
+                android:hint="@string/addresse_abfarht"/>
+
             <ImageButton
                 android:id="@+id/BT_RetourTrip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@id/ET_StartAddress"
+                android:layout_alignTop="@id/ACTV_StartAddress"
                 android:layout_marginTop="12dp"
                 android:layout_marginRight="15dp"
                 android:layout_alignEnd="@id/TV_Start"
@@ -80,7 +79,7 @@
                 android:id="@+id/BT_Home"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@id/ET_StartAddress"
+                android:layout_alignTop="@id/ACTV_StartAddress"
                 android:layout_marginTop="12dp"
                 android:layout_marginRight="40dp"
                 android:layout_alignEnd="@id/TV_Start"
@@ -91,7 +90,7 @@
                 android:id="@+id/BT_GPSLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@id/ET_StartAddress"
+                android:layout_alignTop="@id/ACTV_StartAddress"
                 android:layout_marginTop="12dp"
                 android:layout_marginRight="65dp"
                 android:layout_alignEnd="@id/TV_Start"
@@ -105,7 +104,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignEnd="@+id/TV_Start"
                 android:layout_alignStart="@+id/TV_Start"
-                android:layout_below="@+id/ET_StartAddress"
+                android:layout_below="@+id/ACTV_StartAddress"
                 android:ems="10"
                 android:hint="@string/ort_abfarht"
                 android:inputType="textPersonName" />

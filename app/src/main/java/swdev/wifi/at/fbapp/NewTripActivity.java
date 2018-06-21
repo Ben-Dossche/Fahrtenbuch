@@ -18,6 +18,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -59,7 +61,7 @@ public class NewTripActivity extends AppCompatActivity  {
     private EditText etStartTime;
     private EditText etStartKm;
     private EditText etNote;
-    private EditText etStartAddress;
+    private AutoCompleteTextView etStartAddress;
     private Switch swCat;
     private ImageButton btRetourTrip;
     private ImageButton btHome;
@@ -87,7 +89,7 @@ public class NewTripActivity extends AppCompatActivity  {
         etStartKm = findViewById(R.id.ET_StartKm);
         etNote = findViewById(R.id.ET_Note);
         swCat = findViewById(R.id.SW_Category);
-        etStartAddress = findViewById(R.id.ET_StartAddress);
+        etStartAddress = findViewById(R.id.ACTV_StartAddress);  //findViewById(R.id.ET_StartAddress);
         btRetourTrip = findViewById(R.id.BT_RetourTrip);
         btHome = findViewById(R.id.BT_Home);
         btGpsLocation = findViewById(R.id.BT_GPSLocation);
@@ -116,6 +118,11 @@ public class NewTripActivity extends AppCompatActivity  {
         final DateFormat tf = new SimpleDateFormat("HH:mm", Locale.GERMAN);
         etStartDate.setText(df.format(d1));
         etStartTime.setText(tf.format(d1));
+
+        //
+        String[] addlist = MainFBActivity.getsAddressArray();
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, addlist);
+        etStartAddress.setAdapter(adapter);
 
         //SAVE BUTTON CLICK
         final Button button = findViewById(R.id.BT_StartTrip);
@@ -254,6 +261,19 @@ public class NewTripActivity extends AppCompatActivity  {
             }
         });
 
+        etStartAddress.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    //try to find loaction for given address in list
+                    String s = MainFBActivity.FindLocation4Address(etStartAddress.getText().toString());
+                    if (!s.isEmpty()) {
+                        etStartLocation.setText(s);
+                    }
+                }
+            }
+        });
+
         //GPS BUTTON CLICK
         btGpsLocation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -270,7 +290,8 @@ public class NewTripActivity extends AppCompatActivity  {
             }
         });
 
-        findViewById(R.id.ET_StartAddress).requestFocus();
+        //findViewById(R.id.ET_StartAddress).requestFocus();
+        findViewById(R.id.ACTV_StartAddress).requestFocus();
 
     }
 

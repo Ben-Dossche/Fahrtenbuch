@@ -19,6 +19,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -79,7 +81,7 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
     private EditText etEndTime;
     private EditText etEndKm;
     private EditText etNote;
-    private EditText etEndAddress;
+    private AutoCompleteTextView etEndAddress;
     private Switch swCat;
     private ImageButton btHome;
     private ImageButton btGpsLocation;
@@ -103,7 +105,7 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
         etEndKm = findViewById(R.id.ET_EndKm);
         etNote = findViewById(R.id.ET_EndNote);
         swCat = findViewById(R.id.SW_EndCategory);
-        etEndAddress = findViewById(R.id.ET_EndAddress);
+        etEndAddress = findViewById(R.id.ACTV_EndAddress);
         btHome = findViewById(R.id.BT_EndHome);
         btGpsLocation = findViewById(R.id.BT_EndGPSLocation);
         progressBar = findViewById(R.id.progressBar);
@@ -157,6 +159,11 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
         final DateFormat tf = new SimpleDateFormat("HH:mm", Locale.GERMAN);
         etEndDate.setText(df.format(d1));
         etEndTime.setText(tf.format(d1));
+
+        //
+        String[] addlist = MainFBActivity.getsAddressArray();
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, addlist);
+        etEndAddress.setAdapter(adapter);
 
         //FILL IN NOTE AND CAT VALUES
         etNote.setText(getIntent().getExtras().getString(EXTRA_REPLY_TRIPSTARTNOTE));
@@ -287,6 +294,7 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
         });
 
         //DELETE BUTTON CLICK
+
         final ImageButton btDelete = findViewById(R.id.BT_Delete);
         btDelete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -314,8 +322,21 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
             }
         });
 
+        etEndAddress.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    //try to find loaction for given address in list
+                    String s = MainFBActivity.FindLocation4Address(etEndAddress.getText().toString());
+                    if (!s.isEmpty()) {
+                        etEndLocation.setText(s);
+                    }
+                }
+            }
+        });
 
-        findViewById(R.id.ET_EndAddress).requestFocus();
+
+        findViewById(R.id.ACTV_EndAddress).requestFocus();
 
     }
 

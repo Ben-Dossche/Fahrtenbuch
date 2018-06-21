@@ -28,6 +28,10 @@ public class TripViewModel extends AndroidViewModel {
 
     public List<Trip> GetTripsForTimeFrame(Long dateStart, Long dateEnd) { return mRepository.GetTripsForTimeFrame(dateStart,dateEnd); }
 
+    public List<String> getStartLocations() { return mRepository.getStartLocations(); }
+
+    public List<String> getFinishLocations() { return mRepository.getFinishLocations(); }
+
 //    public LiveData<List<Trip>> getAllOpenTrips() { return mAllOpenTrips;}
 
 //    public LiveData<List<Trip>> getAllActiveTrips() { return mAllActiveTrips;}

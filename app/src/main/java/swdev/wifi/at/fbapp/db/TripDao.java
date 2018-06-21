@@ -42,7 +42,7 @@ public interface TripDao {
     @Query("SELECT * FROM trips WHERE _id = :id")
     Trip getTripById(int id);
 
-    @Query("SELECT * FROM trips ORDER BY _id DESC LIMIT 1")
+    @Query("SELECT * FROM trips ORDER BY start DESC LIMIT 1")
     Trip getLastTrip();
 
     @Query("SELECT * FROM trips WHERE category = 1 AND start BETWEEN :daystart AND :dayend")
@@ -51,5 +51,10 @@ public interface TripDao {
     @Query("SELECT * FROM trips WHERE start BETWEEN :daystart AND :dayend")
     List<Trip> getTripsForTimeFrame(long daystart, long dayend);
 
+    @Query("SELECT DISTINCT start_location FROM trips")
+    List<String> getStartLocations();
+
+    @Query("SELECT DISTINCT finish_location FROM trips")
+    List<String> getFinishLocations();
 }
 

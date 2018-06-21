@@ -3,6 +3,7 @@ package swdev.wifi.at.fbapp;
 import android.Manifest;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -15,6 +16,7 @@ import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,6 +40,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 
 import swdev.wifi.at.fbapp.db.ChartActivity;
@@ -61,7 +64,8 @@ public class MainFBActivity extends AppCompatActivity {
     private Long exportTill;
     private String  exportCat;
 
-
+    private static String[] sAddressArray;
+    private static List<String> sFullAddressList;
 
     private View.OnClickListener itemClickListener = new View.OnClickListener() {
         @Override
@@ -84,6 +88,9 @@ public class MainFBActivity extends AppCompatActivity {
                 startActivityForResult(intent, EDIT_OPENTRIP_ACTIVITY_REQUEST_CODE);
             //ACTIVE TRIP
             } else {
+                //prepare a list of all used addresses (used for autocompletion)
+                PrepareAddressRefLists();
+
                 Intent intent = new Intent(MainFBActivity.this, EditActiveTripActivity.class);
                 intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPID, trip._id);
                 intent.putExtra(EditActiveTripActivity.EXTRA_REPLY_TRIPSTARTLOC, trip.getStartLocation());
@@ -129,6 +136,9 @@ public class MainFBActivity extends AppCompatActivity {
                             "Hinzufügen nicht möglich, es gibt ein aktive Fahrt...",
                             Toast.LENGTH_LONG).show();
                 } else {
+                    //prepare a list of all used addresses (used for autocompletion)
+                    PrepareAddressRefLists();
+
                     //we retrieve data of last trip and past to newtripactivity
                     Intent intent = new Intent(MainFBActivity.this, NewTripActivity.class);
                     Trip lastTrip = mTripViewModel.getLastTrip();
@@ -166,6 +176,65 @@ public class MainFBActivity extends AppCompatActivity {
 
     }
 
+    public static String FindLocation4Address(final String address) {
+        String s = "";
+        for (String str : sFullAddressList) {
+            if (str.trim().contains(address)) {
+                s = str;
+                break;
+            }
+        }
+        if (!s.isEmpty()) {
+            s = s.split(" - ")[1];
+        }
+        return s;
+    }
+
+    public static String[] getsAddressArray() {
+        return sAddressArray;
+    }
+
+    private void PrepareAddressRefLists() {
+        //get unique list of all places in db (start and finish)
+        sFullAddressList = mTripViewModel.getStartLocations();
+        List<String> sListFinish = mTripViewModel.getFinishLocations();
+        //merge lists
+        for (String s : sListFinish) {
+            if (!sFullAddressList.contains(s)) {
+                sFullAddressList.add(s);
+            }
+        }
+        //extract addresses from lists (address without location)
+        sAddressArray = new String[sFullAddressList.size()];
+        String address;
+        int i = 0;
+        //String[] sLocationArray = new String[sList.size()];
+        for (String  s : sFullAddressList) {
+            if (s != null && !s.isEmpty()) {
+                address = (s.lastIndexOf(" - ") > -1) ? s.substring(0, s.lastIndexOf(" - ")) : s;
+                sAddressArray[i] = address;
+                i += 1;
+            } else {
+                sAddressArray[i] = "";
+                i += 1;
+            }
+        }
+
+        /* TESTING PURPOSES
+        String[] sListAsArray = new String[sList.size()];
+        sList.toArray(sListAsArray);
+        StringBuilder sb = new StringBuilder();
+        for (String s : sListAsArray)
+            sb.append(s + "").append(";");
+        String ss = sb.substring(0, sb.length() - 1);
+        Log.d("TAG", ss);
+        sb.setLength(0);
+        for (String s : sAddressArray)
+            sb.append(s + "").append(";");
+        ss = sb.substring(0, sb.length() - 1);
+        Log.d("TAG", ss);
+        */
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -192,9 +261,24 @@ public class MainFBActivity extends AppCompatActivity {
         } else if (id == R.id.action_stat) {
             createChart4Past12Months();
             return true;
+        } else if (id == R.id.action_info) {
+            ShowInfoDialog();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void ShowInfoDialog() {
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle("Fahrtenbuch Info");
+        alertDialog.setMessage("Fahrtenbuch App - V1.00\nFür Android V6 und höher\n\nWIFI Abschlussprojekt 2018\n'Software Developer Java'\nBen Dossche");
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

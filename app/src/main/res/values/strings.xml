@@ -36,4 +36,5 @@
     <string name="offenefahrt">Offene Fahrt</string>
     <string name="aktivefahrt">Aktive Fahrt</string>
     <string name="neuefahrt">Neue Fahrt starten</string>
+    <string name="info">Info</string>
 </resources>

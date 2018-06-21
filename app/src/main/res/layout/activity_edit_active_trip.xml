@@ -112,23 +112,22 @@
                 android:hint="@string/zeit_hh_mm"
                 android:inputType="time" />
 
-            <EditText
-                android:id="@+id/ET_EndAddress"
+            <AutoCompleteTextView
+                android:id="@+id/ACTV_EndAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/TV_End"
-                android:layout_alignStart="@+id/TV_End"
-                android:layout_below="@+id/ET_EndTime"
-                android:ems="10"
+                android:layout_alignEnd="@id/TV_End"
+                android:layout_alignStart="@id/TV_End"
+                android:layout_below="@id/ET_EndTime"
                 android:layout_marginRight="45dp"
-                android:hint="@string/addresse_ankunft"
-                android:inputType="textPersonName" />
+                android:inputType="textNoSuggestions"
+                android:hint="@string/addresse_ankunft"/>
 
             <ImageButton
                 android:id="@+id/BT_EndHome"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@id/ET_EndAddress"
+                android:layout_alignTop="@id/ACTV_EndAddress"
                 android:layout_marginTop="12dp"
                 android:layout_marginRight="15dp"
                 android:layout_alignEnd="@id/TV_End"
@@ -139,7 +138,7 @@
                 android:id="@+id/BT_EndGPSLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@id/ET_EndAddress"
+                android:layout_alignTop="@id/ACTV_EndAddress"
                 android:layout_marginTop="12dp"
                 android:layout_marginRight="40dp"
                 android:layout_alignEnd="@id/TV_End"
@@ -153,7 +152,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignEnd="@+id/TV_End"
                 android:layout_alignStart="@+id/TV_End"
-                android:layout_below="@+id/ET_EndAddress"
+                android:layout_below="@+id/ACTV_EndAddress"
                 android:ems="10"
                 android:hint="@string/ort_ankunft"
                 android:inputType="textPersonName" />
