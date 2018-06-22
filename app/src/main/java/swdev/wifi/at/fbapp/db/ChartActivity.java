@@ -67,7 +67,6 @@ public class ChartActivity extends AppCompatActivity {
         }
 
         //PREPARE labels and bardata with past 12 months
-
         ArrayList<BarEntry> bargroup1 = new ArrayList<>();
         ArrayList<BarEntry> bargroup2 = new ArrayList<>();
         ArrayList<String> labels = new ArrayList<String>();
@@ -92,29 +91,10 @@ public class ChartActivity extends AppCompatActivity {
             barEntryIndex += 1;
         }
 
-        // TODO: 21.06.2018 put tripdata in arraylists for corresponding months
-/*
-        // create BarEntry for Bar Group 1
-        bargroup1.add(new BarEntry(8f, 0));
-        bargroup1.add(new BarEntry(2f, 1));
-        bargroup1.add(new BarEntry(5f, 2));
-        bargroup1.add(new BarEntry(20f, 3));
-        bargroup1.add(new BarEntry(15f, 4));
-        bargroup1.add(new BarEntry(19f, 5));
-*
-        // create BarEntry for Bar Group 1
-        bargroup2.add(new BarEntry(6f, 0));
-        bargroup2.add(new BarEntry(10f, 1));
-        bargroup2.add(new BarEntry(5f, 2));
-        bargroup2.add(new BarEntry(25f, 3));
-        bargroup2.add(new BarEntry(4f, 4));
-        bargroup2.add(new BarEntry(17f, 5));
-*/
         // creating dataset for Bar Group1
         BarDataSet barDataSet1 = new BarDataSet(bargroup1, "berufliche Fahrten");
         barDataSet1.setColor(Color.rgb(0, 155, 0));
         barDataSet1.setDrawValues(false);
-//        barDataSet1.setColors(ColorTemplate.);
 
         // creating dataset for Bar Group 2
         BarDataSet barDataSet2 = new BarDataSet(bargroup2, "private Fahrten");
@@ -132,56 +112,4 @@ public class ChartActivity extends AppCompatActivity {
         chart.animateY(3000);
     }
 
-    public void AddValuesToBARENTRY(){
-
-        BARENTRY.add(new BarEntry(2f, 0));
-        BARENTRY.add(new BarEntry(4f, 1));
-        BARENTRY.add(new BarEntry(6f, 2));
-        BARENTRY.add(new BarEntry(8f, 3));
-        BARENTRY.add(new BarEntry(7f, 4));
-        BARENTRY.add(new BarEntry(3f, 5));
-
-        group1.add(new BarEntry(2f, 0));
-        group1.add(new BarEntry(4f, 1));
-        group1.add(new BarEntry(6f, 2));
-        group1.add(new BarEntry(8f, 3));
-        group1.add(new BarEntry(7f, 4));
-        group1.add(new BarEntry(3f, 5));
-
-        group2.add(new BarEntry(1f, 0));
-        group2.add(new BarEntry(2f, 1));
-        group2.add(new BarEntry(2f, 2));
-        group2.add(new BarEntry(1f, 3));
-        group2.add(new BarEntry(4f, 4));
-        group2.add(new BarEntry(2f, 5));
-    }
-
-    public void AddValuesToBarEntryLabels(){
-
-        BarEntryLabels.add("January 2017");
-        BarEntryLabels.add("February 2017");
-        BarEntryLabels.add("March 2017");
-        BarEntryLabels.add("April 2017");
-        BarEntryLabels.add("May 2017");
-        BarEntryLabels.add("June 2017");
-        BarEntryLabels.add("July 2017");
-        BarEntryLabels.add("August 2017");
-        BarEntryLabels.add("September 2017");
-        BarEntryLabels.add("October 2017");
-        BarEntryLabels.add("November 2017");
-        BarEntryLabels.add("December 2017");
-        BarEntryLabels.add("January 2018");
-        BarEntryLabels.add("February 2018");
-        BarEntryLabels.add("March 2018");
-        BarEntryLabels.add("April 2018");
-        BarEntryLabels.add("May 2018");
-        BarEntryLabels.add("June 2018");
-        BarEntryLabels.add("July 2018");
-        BarEntryLabels.add("August 2018");
-        BarEntryLabels.add("September 2018");
-        BarEntryLabels.add("October 2018");
-        BarEntryLabels.add("November 2018");
-        BarEntryLabels.add("December 2018");
-
-    }
 }
