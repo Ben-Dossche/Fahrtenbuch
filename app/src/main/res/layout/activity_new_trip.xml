@@ -133,22 +133,22 @@
                 android:background="@null"
                 app:srcCompat="@drawable/ic_renew_black_24dp" />
 
-            <EditText
-                android:id="@+id/ET_Note"
+            <AutoCompleteTextView
+                android:id="@+id/ACTV_Note"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/TV_Start"
-                android:layout_alignStart="@+id/TV_Start"
-                android:layout_below="@+id/ET_StartKm"
-                android:ems="10"
-                android:hint="@string/zweck"
-                android:inputType="textPersonName" />
+                android:layout_alignEnd="@id/TV_Start"
+                android:layout_alignStart="@id/TV_Start"
+                android:layout_below="@id/ET_StartKm"
+                android:inputType="textNoSuggestions"
+                android:hint="@string/zweck"/>
+
 
             <Switch
                 android:id="@+id/SW_Category"
                 android:layout_width="229dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/ET_Note"
+                android:layout_below="@+id/ACTV_Note"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="20dp"
                 android:checked="true"

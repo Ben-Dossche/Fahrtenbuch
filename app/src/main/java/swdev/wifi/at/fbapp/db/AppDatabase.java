@@ -74,6 +74,7 @@ public abstract class AppDatabase extends RoomDatabase {
                     trip.setFinishKm(187);
                     trip.setSavedAt(d1);
                     trip.setCategory(1);
+                    trip.setNote("Firma XYC: Projektbesprechung");
                     mDao.addTrip(trip);
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -111,6 +112,7 @@ public abstract class AppDatabase extends RoomDatabase {
                     trip.setFinishKm(375);
                     trip.setSavedAt(d1);
                     trip.setCategory(1);
+                    trip.setNote("WIFI Graz: Java Kurs");
                     mDao.addTrip(trip);
                 } catch (ParseException e) {
                     e.printStackTrace();

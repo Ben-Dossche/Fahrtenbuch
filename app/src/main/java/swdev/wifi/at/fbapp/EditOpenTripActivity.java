@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
@@ -37,7 +39,7 @@ public class EditOpenTripActivity extends AppCompatActivity {
     TextView TV_Infoe2;
     TextView TV_Infoe3;
 
-    private EditText etNote;
+    private AutoCompleteTextView etNote;
     private Switch swCat;
 
     @Override
@@ -51,7 +53,7 @@ public class EditOpenTripActivity extends AppCompatActivity {
         TV_Infoe1 = findViewById(R.id.TV_OpenInfo6);
         TV_Infoe2 = findViewById(R.id.TV_OpenInfo7);
         TV_Infoe3 = findViewById(R.id.TV_OpenInfo8);
-        etNote = findViewById(R.id.ET_EndOpenNote);
+        etNote = findViewById(R.id.ACTV_EndOpenNote);
         swCat = findViewById(R.id.SW_EndOpenCategory);
 
         tripId = getIntent().getExtras().getInt(EXTRA_REPLY_TRIPID);
@@ -66,6 +68,11 @@ public class EditOpenTripActivity extends AppCompatActivity {
         //FILL IN NOTE AND CAT VALUES
         etNote.setText(getIntent().getExtras().getString(EXTRA_REPLY_TRIPSTARTNOTE));
         swCat.setChecked(getIntent().getExtras().getInt(EXTRA_REPLY_TRIPSTARTCAT) == 1);
+
+        //FILL LIST WITH NOTES FOR AUTOCOMPLETION
+        String[] notesList = MainFBActivity.getsNotesArray();
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, notesList);
+        etNote.setAdapter(adapter1);
 
         //SAVE BUTTON CLICK
         final Button button = findViewById(R.id.BT_EndOpenTrip);

@@ -56,5 +56,9 @@ public interface TripDao {
 
     @Query("SELECT DISTINCT finish_location FROM trips")
     List<String> getFinishLocations();
+
+    @Query("SELECT DISTINCT note FROM trips WHERE NOT note is null")
+    List<String> getNotes();
+
 }
 

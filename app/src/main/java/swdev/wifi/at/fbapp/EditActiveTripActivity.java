@@ -80,7 +80,7 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
     private EditText etEndDate;
     private EditText etEndTime;
     private EditText etEndKm;
-    private EditText etNote;
+    private AutoCompleteTextView etNote;
     private AutoCompleteTextView etEndAddress;
     private Switch swCat;
     private ImageButton btHome;
@@ -103,7 +103,7 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
         etEndDate = findViewById(R.id.ET_EndDate);
         etEndTime = findViewById(R.id.ET_EndTime);
         etEndKm = findViewById(R.id.ET_EndKm);
-        etNote = findViewById(R.id.ET_EndNote);
+        etNote = findViewById(R.id.ACTV_EndNote);
         swCat = findViewById(R.id.SW_EndCategory);
         etEndAddress = findViewById(R.id.ACTV_EndAddress);
         btHome = findViewById(R.id.BT_EndHome);
@@ -160,10 +160,13 @@ public class EditActiveTripActivity extends AppCompatActivity implements DatePic
         etEndDate.setText(df.format(d1));
         etEndTime.setText(tf.format(d1));
 
-        //
+        //FILL LISTS FOR AUTOCOMPLETE OF ADDRESS AND NOTES
         String[] addlist = MainFBActivity.getsAddressArray();
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, addlist);
         etEndAddress.setAdapter(adapter);
+        String[] notesList = MainFBActivity.getsNotesArray();
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, notesList);
+        etNote.setAdapter(adapter1);
 
         //FILL IN NOTE AND CAT VALUES
         etNote.setText(getIntent().getExtras().getString(EXTRA_REPLY_TRIPSTARTNOTE));

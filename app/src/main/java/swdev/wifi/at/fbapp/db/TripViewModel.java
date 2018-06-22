@@ -32,6 +32,8 @@ public class TripViewModel extends AndroidViewModel {
 
     public List<String> getFinishLocations() { return mRepository.getFinishLocations(); }
 
+    public List<String> getNotes() {return mRepository.getNotes(); }
+
 //    public LiveData<List<Trip>> getAllOpenTrips() { return mAllOpenTrips;}
 
 //    public LiveData<List<Trip>> getAllActiveTrips() { return mAllActiveTrips;}

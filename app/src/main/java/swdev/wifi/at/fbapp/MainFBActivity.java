@@ -67,6 +67,8 @@ public class MainFBActivity extends AppCompatActivity {
     private static String[] sAddressArray;
     private static List<String> sFullAddressList;
 
+    private static String[] sNotesArray;
+
     private View.OnClickListener itemClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -138,6 +140,7 @@ public class MainFBActivity extends AppCompatActivity {
                 } else {
                     //prepare a list of all used addresses (used for autocompletion)
                     PrepareAddressRefLists();
+                    PrepareNotesRefList();
 
                     //we retrieve data of last trip and past to newtripactivity
                     Intent intent = new Intent(MainFBActivity.this, NewTripActivity.class);
@@ -194,6 +197,16 @@ public class MainFBActivity extends AppCompatActivity {
         return sAddressArray;
     }
 
+    public static String[] getsNotesArray() {
+        return sNotesArray;
+    }
+
+    private void PrepareNotesRefList() {
+        List<String> NotesList = mTripViewModel.getNotes();
+        sNotesArray = new String[NotesList.size()];
+        NotesList.toArray(sNotesArray);
+    }
+
     private void PrepareAddressRefLists() {
         //get unique list of all places in db (start and finish)
         sFullAddressList = mTripViewModel.getStartLocations();
@@ -208,7 +221,6 @@ public class MainFBActivity extends AppCompatActivity {
         sAddressArray = new String[sFullAddressList.size()];
         String address;
         int i = 0;
-        //String[] sLocationArray = new String[sList.size()];
         for (String  s : sFullAddressList) {
             if (s != null && !s.isEmpty()) {
                 address = (s.lastIndexOf(" - ") > -1) ? s.substring(0, s.lastIndexOf(" - ")) : s;
@@ -438,8 +450,6 @@ public class MainFBActivity extends AppCompatActivity {
             //we retrieve data of last trip and past to newtripactivity
             Intent intent = new Intent(MainFBActivity.this, ExportActivity.class);
             Trip lastTrip = mTripViewModel.getLastTrip();
-            // TODO: 15.06.2018 pass default email
-               //   intent.putExtra(NewTripActivity.EXTRA_LASTSTARTLOCATION,lastTrip.getStartLocation());
             startActivityForResult(intent, EXPORT_ACTIVITY_REQUEST_CODE);
         }
     }
@@ -553,7 +563,6 @@ public class MainFBActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG).show();
 
                 }
-                /*WORKING !!!*/
                 //SEND EMAIL WITH ATTACHMENT
                 try {
                     Uri u1 = null;
@@ -595,7 +604,6 @@ public class MainFBActivity extends AppCompatActivity {
                             "Email fehlgeschlagen",
                             Toast.LENGTH_LONG).show();
                 }
-//*/
 
             }
 

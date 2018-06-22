@@ -60,7 +60,7 @@ public class NewTripActivity extends AppCompatActivity  {
     private EditText etStartDate;
     private EditText etStartTime;
     private EditText etStartKm;
-    private EditText etNote;
+    private AutoCompleteTextView etNote;
     private AutoCompleteTextView etStartAddress;
     private Switch swCat;
     private ImageButton btRetourTrip;
@@ -87,9 +87,9 @@ public class NewTripActivity extends AppCompatActivity  {
         etStartDate = findViewById(R.id.ET_StartDate);
         etStartTime = findViewById(R.id.ET_StartTime);
         etStartKm = findViewById(R.id.ET_StartKm);
-        etNote = findViewById(R.id.ET_Note);
+        etNote = findViewById(R.id.ACTV_Note);
         swCat = findViewById(R.id.SW_Category);
-        etStartAddress = findViewById(R.id.ACTV_StartAddress);  //findViewById(R.id.ET_StartAddress);
+        etStartAddress = findViewById(R.id.ACTV_StartAddress);
         btRetourTrip = findViewById(R.id.BT_RetourTrip);
         btHome = findViewById(R.id.BT_Home);
         btGpsLocation = findViewById(R.id.BT_GPSLocation);
@@ -119,10 +119,13 @@ public class NewTripActivity extends AppCompatActivity  {
         etStartDate.setText(df.format(d1));
         etStartTime.setText(tf.format(d1));
 
-        //
+        //FILL LISTS FOR AUTOCOMPLETE OF ADDRESS AND NOTES
         String[] addlist = MainFBActivity.getsAddressArray();
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, addlist);
         etStartAddress.setAdapter(adapter);
+        String[] notesList = MainFBActivity.getsNotesArray();
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, notesList);
+        etNote.setAdapter(adapter1);
 
         //SAVE BUTTON CLICK
         final Button button = findViewById(R.id.BT_StartTrip);

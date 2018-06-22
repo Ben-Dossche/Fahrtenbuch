@@ -40,6 +40,8 @@ public class TripRepository {
 
     public List<String> getFinishLocations() {return mTripDao.getFinishLocations();}
 
+    public List<String> getNotes() {return mTripDao.getNotes();}
+
     public int NrOfActiveTrips() {return mTripDao.getNrOfActiveTrips();};
 
     public int NrOfOpenTrips() {return  mTripDao.getNrOfOpenTrips();};
